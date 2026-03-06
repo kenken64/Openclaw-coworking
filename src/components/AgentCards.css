@@ -1,0 +1,143 @@
+.agent-cards {
+  width: 260px;
+  min-width: 260px;
+  background: #0f0f23;
+  border-left: 4px solid #2d3436;
+  padding: 16px;
+  overflow-y: auto;
+}
+
+.cards-title {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 9px;
+  color: #e74c3c;
+  text-align: center;
+  margin: 0 0 12px;
+  text-shadow: 0 0 8px rgba(231, 76, 60, 0.4);
+}
+
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+.agent-card {
+  background: #16213e;
+  border: 2px solid #2d3436;
+  padding: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+
+.agent-card:hover {
+  border-color: #636e72;
+  transform: scale(1.02);
+}
+
+.card-selected {
+  border-color: #f1c40f !important;
+  box-shadow: 0 0 12px rgba(241, 196, 15, 0.4);
+}
+
+.card-room {
+  height: 60px;
+  background: #1a1a2e;
+  border: 1px solid #2d3436;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  margin-bottom: 6px;
+}
+
+.card-desk {
+  width: 30px;
+  height: 18px;
+  background: #636e72;
+  border: 1px solid #2d3436;
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  justify-content: center;
+  padding: 2px;
+}
+
+.card-monitor {
+  width: 14px;
+  height: 12px;
+  background: #0f0f23;
+  border: 1px solid;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 2px;
+}
+
+.card-screen-line {
+  height: 2px;
+  width: 100%;
+}
+
+.card-screen-line.short {
+  width: 60%;
+}
+
+.card-agent-sprite {
+  position: absolute;
+  bottom: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  animation: card-sprite-bob 2s ease-in-out infinite;
+}
+
+.card-emoji {
+  font-size: 20px;
+}
+
+.card-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+}
+
+.card-name {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 6px;
+  color: #dfe6e9;
+}
+
+.card-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* Sparkle effects for TRENDY */
+.sparkle {
+  position: absolute;
+  font-size: 8px;
+  color: #f1c40f;
+  animation: sparkle-anim 1.5s ease-in-out infinite;
+  z-index: 2;
+}
+
+.sparkle-1 { top: 4px; right: 8px; animation-delay: 0s; }
+.sparkle-2 { top: 12px; left: 8px; animation-delay: 0.5s; }
+.sparkle-3 { bottom: 20px; right: 12px; animation-delay: 1s; }
+
+@keyframes sparkle-anim {
+  0%, 100% { opacity: 0; transform: scale(0.5); }
+  50% { opacity: 1; transform: scale(1.2); }
+}
+
+@keyframes card-sprite-bob {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(-2px); }
+}

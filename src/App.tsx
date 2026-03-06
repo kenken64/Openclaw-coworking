@@ -1,35 +1,73 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState, useEffect, useCallback } from 'react';
+import Header from './components/Header';
+import Sidebar from './components/Sidebar';
+import OfficeGrid from './components/OfficeGrid';
+import AgentCards from './components/AgentCards';
+import { initialAgents, rooms } from './data';
+import type { Agent, AgentStatus, FilterTab } from './types';
+import './App.css';
+
+const statuses: AgentStatus[] = ['WORKING', 'IDLE', 'COMPUTING'];
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [agents, setAgents] = useState<Agent[]>(initialAgents);
+  const [filter, setFilter] = useState<FilterTab>('ALL');
+  const [search, setSearch] = useState('');
+  const [selectedAgent, setSelectedAgent] = useState<string | null>(null);
+
+  // Randomly update agent statuses and progress
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setAgents(prev =>
+        prev.map(agent => {
+          const shouldChange = Math.random() < 0.15;
+          if (!shouldChange) {
+            // Just update progress slightly
+            const progressDelta = Math.floor(Math.random() * 6) - 2;
+            const newProgress = Math.max(0, Math.min(100, agent.progress + progressDelta));
+            return { ...agent, progress: newProgress };
+          }
+          return {
+            ...agent,
+            status: statuses[Math.floor(Math.random() * statuses.length)],
+            progress: Math.floor(Math.random() * 60) + 20,
+          };
+        })
+      );
+    }, 3000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const handleAgentClick = useCallback((id: string) => {
+    setSelectedAgent(prev => (prev === id ? null : id));
+  }, []);
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div className="app">
+      <Header />
+      <div className="app-body">
+        <Sidebar
+          agents={agents}
+          filter={filter}
+          search={search}
+          selectedAgent={selectedAgent}
+          onFilterChange={setFilter}
+          onSearchChange={setSearch}
+          onAgentClick={handleAgentClick}
+        />
+        <OfficeGrid
+          rooms={rooms}
+          agents={agents}
+          selectedAgent={selectedAgent}
+        />
+        <AgentCards
+          agents={agents}
+          selectedAgent={selectedAgent}
+          onAgentClick={handleAgentClick}
+        />
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    </div>
+  );
 }
 
-export default App
+export default App;

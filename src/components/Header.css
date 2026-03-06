@@ -1,0 +1,72 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 20px;
+  background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
+  border-bottom: 4px solid #e74c3c;
+  box-shadow: 0 4px 0 #0f0f23, 0 6px 20px rgba(231, 76, 60, 0.3);
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.header-logo {
+  font-size: 28px;
+  filter: drop-shadow(0 0 8px rgba(231, 76, 60, 0.6));
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+.header-title {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 18px;
+  color: #fff;
+  text-shadow: 2px 2px 0 #e74c3c, 0 0 10px rgba(231, 76, 60, 0.5);
+}
+
+.header-badge {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 10px;
+  background: #f1c40f;
+  color: #1a1a2e;
+  padding: 4px 10px;
+  border: 2px solid #e67e22;
+  box-shadow: 2px 2px 0 #e67e22;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.header-clock {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 10px;
+  color: #7bed9f;
+  text-shadow: 0 0 8px rgba(123, 237, 159, 0.5);
+}
+
+.header-dots {
+  display: flex;
+  gap: 6px;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  box-shadow: 0 0 6px currentColor;
+}
+
+.dot-green { background: #2ecc71; color: #2ecc71; }
+.dot-yellow { background: #f1c40f; color: #f1c40f; }
+.dot-blue { background: #3498db; color: #3498db; }
+
+@keyframes pulse-glow {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
