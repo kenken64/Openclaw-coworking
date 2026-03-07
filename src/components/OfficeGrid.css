@@ -11,7 +11,7 @@
   position: relative;
   overflow: hidden;
   transition: all 0.3s;
-  min-height: 240px;
+  min-height: 260px;
   image-rendering: pixelated;
   /* Pixel-art room: blue wall (top 40%) → dark baseboard line → gray floor (bottom 60%) */
   background:
@@ -89,11 +89,57 @@
   align-items: flex-end;
 }
 
-.conf-tables {
+/* Conference room — Kenneth's sketch layout */
+.conf-layout {
   display: flex;
   flex-direction: column;
-  gap: 2px;
   align-items: center;
+  gap: 2px;
+}
+
+.conf-presenter {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 4px;
+  animation: presenter-bob 2s ease-in-out infinite;
+}
+
+@keyframes presenter-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+
+.conf-table-row {
+  gap: 0px !important;
+}
+
+.conf-walkers {
+  display: flex;
+  gap: 40px;
+  margin-top: 6px;
+  justify-content: center;
+}
+
+.walker-1 {
+  animation: walk-left 4s ease-in-out infinite;
+}
+
+.walker-2 {
+  animation: walk-right 5s ease-in-out infinite;
+}
+
+@keyframes walk-left {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(-14px); }
+}
+
+@keyframes walk-right {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(14px); }
+}
+
+.conf-sofa-row {
+  margin-top: 8px;
 }
 
 .room-agents {
