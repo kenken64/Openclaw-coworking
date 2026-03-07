@@ -21,10 +21,10 @@ function Sprite({ sprite, scale = 2, style }: { sprite: SpriteRect; scale?: numb
 const roomBottomFurniture: Record<string, React.ReactNode> = {
   conference: (
     <div className="conf-bottom">
-      {/* Two walking characters */}
+      {/* Two walking characters below table */}
       <div className="conf-walkers">
-        <div className="walker walker-1"><Sprite sprite={CHARACTERS[2]} scale={2.5} /></div>
-        <div className="walker walker-2"><Sprite sprite={CHARACTERS[4]} scale={2.5} /></div>
+        <div className="walker walker-1"><Sprite sprite={CHARACTERS[2]} scale={3} /></div>
+        <div className="walker walker-2"><Sprite sprite={CHARACTERS[4]} scale={3} /></div>
       </div>
       {/* Sofa at very bottom */}
       <div className="scene-row">
@@ -37,30 +37,26 @@ const roomBottomFurniture: Record<string, React.ReactNode> = {
 const roomFurniture: Record<string, React.ReactNode> = {
   conference: (
     <div className="room-scene conf-room">
-      {/* Character standing at top of table + top chair */}
+      {/* 1 character standing at the top */}
       <div className="scene-row">
-        <Sprite sprite={CHARACTERS[1]} scale={2.5} />
-        <Sprite sprite={CHAIRS[0]} scale={2} />
+        <Sprite sprite={CHARACTERS[1]} scale={3} />
       </div>
-      {/* Left chairs + TABLE + Right chairs */}
-      <div className="scene-row conf-table-group">
+      {/* Left chairs | Rotated tables (vertical) | Right chairs */}
+      <div className="conf-table-group">
         <div className="conf-side-chairs">
+          <Sprite sprite={CHAIRS[0]} scale={2} />
           <Sprite sprite={CHAIRS[3]} scale={2} />
           <Sprite sprite={CHAIRS[1]} scale={2} />
         </div>
-        <div className="conf-table-center">
-          <Sprite sprite={DESK_ORANGE} scale={3} />
-          <Sprite sprite={DESK_RED} scale={3} />
+        <div className="conf-tables-vertical">
+          <Sprite sprite={DESK_ORANGE} scale={3} style={{ transform: 'rotate(90deg)' }} />
+          <Sprite sprite={DESK_RED} scale={3} style={{ transform: 'rotate(90deg)' }} />
         </div>
         <div className="conf-side-chairs">
           <Sprite sprite={CHAIRS[4]} scale={2} />
           <Sprite sprite={CHAIRS[2]} scale={2} />
+          <Sprite sprite={CHAIRS[5]} scale={2} />
         </div>
-      </div>
-      {/* Bottom chairs */}
-      <div className="scene-row">
-        <Sprite sprite={CHAIRS[5]} scale={2} />
-        <Sprite sprite={CHAIRS[0]} scale={2} />
       </div>
     </div>
   ),
