@@ -11,7 +11,7 @@ export const initialAgents: Agent[] = [
   { id: 'sage', name: 'SAGE', personName: 'Lisa', status: 'COMPUTING', progress: 71, room: 'conference', color: '#1e90ff', emoji: '🧙' },
   { id: 'scribe', name: 'SCRIBE', personName: 'Daniel', status: 'WORKING', progress: 83, room: 'jarvis', color: '#ffa502', emoji: '✍️' },
   { id: 'sentinel', name: 'SENTINEL', personName: 'Amanda', status: 'WORKING', progress: 95, room: 'jarvis', color: '#ff4757', emoji: '🛡️' },
-  { id: 'trendy', name: 'TRENDY', personName: 'Kevin', status: 'IDLE', progress: 20, room: 'vibe', color: '#ff6b81', emoji: '✨' },
+  { id: 'trendy', name: 'TRENDY', personName: 'Kevin', status: 'WORKING', progress: 42, room: 'conference', color: '#ff6b81', emoji: '✨' },
 ];
 
 export const rooms: Room[] = [
