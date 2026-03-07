@@ -138,6 +138,7 @@
 }
 
 .walker-2 {
+  transform: scaleX(-1);
   animation: walk-right 5s ease-in-out infinite;
 }
 
