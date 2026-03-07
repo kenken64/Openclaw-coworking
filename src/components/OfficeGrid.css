@@ -13,7 +13,7 @@
   transition: all 0.3s;
   min-height: 260px;
   image-rendering: pixelated;
-  /* Pixel-art room: blue wall (top 40%) → dark baseboard line → gray floor (bottom 60%) */
+  /* Pixel-art room: blue wall (top 40%) → dark baseboard line → black carpet floor (bottom 60%) */
   background:
     linear-gradient(
       to bottom,
@@ -23,8 +23,8 @@
       #2a3b55 40%,
       #1e2a3e 40%,
       #1e2a3e 41%,
-      #383e4a 41%,
-      #383e4a 100%
+      #0a0a0a 41%,
+      #0a0a0a 100%
     );
 }
 
