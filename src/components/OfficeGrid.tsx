@@ -49,8 +49,8 @@ const roomFurniture: Record<string, React.ReactNode> = {
           <Sprite sprite={CHAIRS[1]} scale={2} />
         </div>
         <div className="conf-tables-vertical">
-          <Sprite sprite={DESK_ORANGE} scale={3} style={{ transform: 'rotate(90deg)' }} />
-          <Sprite sprite={DESK_RED} scale={3} style={{ transform: 'rotate(90deg)' }} />
+          <div className="conf-table-rotated"><Sprite sprite={DESK_ORANGE} scale={3} /></div>
+          <div className="conf-table-rotated"><Sprite sprite={DESK_RED} scale={3} /></div>
         </div>
         <div className="conf-side-chairs">
           <Sprite sprite={CHAIRS[4]} scale={2} />

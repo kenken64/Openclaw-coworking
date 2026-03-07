@@ -89,9 +89,15 @@
   align-items: flex-end;
 }
 
-/* Conference room — matches Kenneth's sketch */
+/* Conference room — no 3D transform, flat top-down view */
 .conf-room {
   gap: 4px;
+}
+
+/* Override: disable isometric tilt for conference */
+.room-card:first-child .room-floor-inner {
+  transform: none;
+  padding: 10px 14px 14px;
 }
 
 /* Left chairs | Vertical tables | Right chairs */
@@ -114,9 +120,9 @@
 .conf-tables-vertical {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 14px;
   align-items: center;
-  padding: 10px 20px;
+  padding: 16px 24px;
 }
 
 .conf-bottom {
@@ -125,6 +131,12 @@
   align-items: center;
   gap: 10px;
   margin-top: 8px;
+}
+
+/* Rotate table sprite 90deg and fix overflow */
+.conf-table-rotated {
+  transform: rotate(90deg);
+  margin: 10px 0;
 }
 
 .conf-walkers {
