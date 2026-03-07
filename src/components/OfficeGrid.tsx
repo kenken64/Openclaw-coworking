@@ -3,7 +3,7 @@ import type { Agent, Room } from '../types';
 import {
   spriteStyle, spriteStyleFitH, getAgentSprite,
   CHAIRS, DESK_BLUE, DESK_RED, DESK_ORANGE,
-  SOFA_BLUE, SOFA_GREEN, PLANT, BULLETIN,
+  SOFA_BLUE, SOFA_GREEN, PLANT, BULLETIN, CHARACTERS,
 } from '../sprites';
 import type { SpriteRect } from '../sprites';
 import './OfficeGrid.css';
@@ -20,8 +20,16 @@ function Sprite({ sprite, scale = 2, style }: { sprite: SpriteRect; scale?: numb
 
 const roomBottomFurniture: Record<string, React.ReactNode> = {
   conference: (
-    <div className="scene-row" style={{ marginTop: 6 }}>
-      <Sprite sprite={SOFA_BLUE} scale={3} />
+    <div className="conf-bottom">
+      {/* Two walking characters */}
+      <div className="conf-walkers">
+        <div className="walker walker-1"><Sprite sprite={CHARACTERS[2]} scale={2.5} /></div>
+        <div className="walker walker-2"><Sprite sprite={CHARACTERS[4]} scale={2.5} /></div>
+      </div>
+      {/* Sofa at very bottom */}
+      <div className="scene-row">
+        <Sprite sprite={SOFA_BLUE} scale={3} />
+      </div>
     </div>
   ),
 };
@@ -29,24 +37,30 @@ const roomBottomFurniture: Record<string, React.ReactNode> = {
 const roomFurniture: Record<string, React.ReactNode> = {
   conference: (
     <div className="room-scene conf-room">
-      {/* Top chairs row */}
+      {/* Character standing at top of table + top chair */}
       <div className="scene-row">
-        <Sprite sprite={CHAIRS[0]} scale={2.5} />
-        <Sprite sprite={CHAIRS[3]} scale={2.5} />
-        <Sprite sprite={CHAIRS[1]} scale={2.5} />
+        <Sprite sprite={CHARACTERS[1]} scale={2.5} />
+        <Sprite sprite={CHAIRS[0]} scale={2} />
       </div>
-      {/* Conference table with side chairs */}
-      <div className="scene-row">
-        <Sprite sprite={CHAIRS[4]} scale={2.5} />
-        <Sprite sprite={DESK_ORANGE} scale={3} />
-        <Sprite sprite={DESK_RED} scale={3} />
-        <Sprite sprite={CHAIRS[2]} scale={2.5} />
+      {/* Left chairs + TABLE + Right chairs */}
+      <div className="scene-row conf-table-group">
+        <div className="conf-side-chairs">
+          <Sprite sprite={CHAIRS[3]} scale={2} />
+          <Sprite sprite={CHAIRS[1]} scale={2} />
+        </div>
+        <div className="conf-table-center">
+          <Sprite sprite={DESK_ORANGE} scale={3} />
+          <Sprite sprite={DESK_RED} scale={3} />
+        </div>
+        <div className="conf-side-chairs">
+          <Sprite sprite={CHAIRS[4]} scale={2} />
+          <Sprite sprite={CHAIRS[2]} scale={2} />
+        </div>
       </div>
-      {/* Bottom chairs row */}
+      {/* Bottom chairs */}
       <div className="scene-row">
-        <Sprite sprite={CHAIRS[5]} scale={2.5} />
-        <Sprite sprite={CHAIRS[0]} scale={2.5} />
-        <Sprite sprite={CHAIRS[3]} scale={2.5} />
+        <Sprite sprite={CHAIRS[5]} scale={2} />
+        <Sprite sprite={CHAIRS[0]} scale={2} />
       </div>
     </div>
   ),

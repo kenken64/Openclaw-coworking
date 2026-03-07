@@ -89,34 +89,39 @@
   align-items: flex-end;
 }
 
-/* Conference room — Kenneth's sketch layout */
-.conf-layout {
+/* Conference room — matches Kenneth's sketch */
+.conf-room {
+  gap: 2px;
+}
+
+.conf-table-group {
   display: flex;
-  flex-direction: column;
   align-items: center;
   gap: 2px;
 }
 
-.conf-presenter {
+.conf-side-chairs {
   display: flex;
-  justify-content: center;
-  margin-bottom: 4px;
-  animation: presenter-bob 2s ease-in-out infinite;
+  flex-direction: column;
+  gap: 4px;
 }
 
-@keyframes presenter-bob {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-3px); }
+.conf-table-center {
+  display: flex;
+  gap: 0;
 }
 
-.conf-table-row {
-  gap: 0px !important;
+.conf-bottom {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
 }
 
 .conf-walkers {
   display: flex;
   gap: 40px;
-  margin-top: 6px;
   justify-content: center;
 }
 
@@ -136,10 +141,6 @@
 @keyframes walk-right {
   0%, 100% { transform: translateX(0); }
   50% { transform: translateX(14px); }
-}
-
-.conf-sofa-row {
-  margin-top: 8px;
 }
 
 .room-agents {
