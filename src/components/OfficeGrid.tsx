@@ -18,9 +18,17 @@ function Sprite({ sprite, scale = 2, style }: { sprite: SpriteRect; scale?: numb
   return <div style={{ ...spriteStyle(sprite, scale), ...style }} />;
 }
 
+const roomBottomFurniture: Record<string, React.ReactNode> = {
+  conference: (
+    <div className="scene-row" style={{ marginTop: 6 }}>
+      <Sprite sprite={SOFA_BLUE} scale={3} />
+    </div>
+  ),
+};
+
 const roomFurniture: Record<string, React.ReactNode> = {
   conference: (
-    <div className="room-scene">
+    <div className="room-scene conf-room">
       {/* Top chairs row */}
       <div className="scene-row">
         <Sprite sprite={CHAIRS[0]} scale={2.5} />
@@ -39,10 +47,6 @@ const roomFurniture: Record<string, React.ReactNode> = {
         <Sprite sprite={CHAIRS[5]} scale={2.5} />
         <Sprite sprite={CHAIRS[0]} scale={2.5} />
         <Sprite sprite={CHAIRS[3]} scale={2.5} />
-      </div>
-      {/* Sofa at bottom */}
-      <div className="scene-row">
-        <Sprite sprite={SOFA_BLUE} scale={3} />
       </div>
     </div>
   ),
@@ -112,6 +116,7 @@ export default function OfficeGrid({ rooms, agents, selectedAgent }: Props) {
                       </div>
                     ))}
                   </div>
+                  {roomBottomFurniture[room.id]}
                 </div>
               </div>
             </div>
