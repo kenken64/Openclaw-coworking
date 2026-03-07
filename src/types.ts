@@ -3,6 +3,7 @@ export type AgentStatus = 'WORKING' | 'IDLE' | 'COMPUTING';
 export interface Agent {
   id: string;
   name: string;
+  personName: string;
   status: AgentStatus;
   progress: number;
   room: string;

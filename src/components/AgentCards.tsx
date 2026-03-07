@@ -1,4 +1,6 @@
+import { useMemo } from 'react';
 import type { Agent } from '../types';
+import { spriteStyle, COMPUTER } from '../sprites';
 import './AgentCards.css';
 
 interface Props {
@@ -14,46 +16,47 @@ const statusColor: Record<string, string> = {
 };
 
 export default function AgentCards({ agents, selectedAgent, onAgentClick }: Props) {
+  // Random animation delays per agent (stable across re-renders)
+  const delays = useMemo(
+    () => agents.map(() => Math.random() * 3),
+    [agents.length],
+  );
+
   return (
     <div className="agent-cards">
       <h3 className="cards-title">⚡ WORKSTATIONS</h3>
       <div className="cards-grid">
-        {agents.map(agent => (
-          <div
-            key={agent.id}
-            className={`agent-card ${selectedAgent === agent.id ? 'card-selected' : ''}`}
-            onClick={() => onAgentClick(agent.id)}
-          >
-            <div className="card-room">
-              <div className="card-desk">
-                <div className="card-monitor" style={{ borderColor: statusColor[agent.status] }}>
-                  <div className="card-screen-line" style={{ background: statusColor[agent.status] }}></div>
-                  <div className="card-screen-line short" style={{ background: statusColor[agent.status] }}></div>
-                </div>
+        {agents.map((agent, i) => {
+          const color = statusColor[agent.status];
+          const animClass =
+            agent.status === 'WORKING' ? 'ws-working' :
+            agent.status === 'COMPUTING' ? 'ws-computing' : 'ws-idle';
+          return (
+            <div
+              key={agent.id}
+              className={`agent-card ${selectedAgent === agent.id ? 'card-selected' : ''}`}
+              onClick={() => onAgentClick(agent.id)}
+            >
+              <div
+                className={`card-room ${animClass}`}
+                style={{ animationDelay: `${delays[i]}s`, '--ws-color': color } as React.CSSProperties}
+              >
+                <div className="ws-screen-glow" style={{ '--ws-color': color } as React.CSSProperties} />
+                <div style={spriteStyle(COMPUTER, 3)} />
               </div>
-              <div className="card-agent-sprite">
-                <span className="card-emoji">{agent.emoji}</span>
+              <div className="card-info">
+                <span className="card-name">{agent.name}</span>
+                <span
+                  className="card-status-dot"
+                  style={{
+                    background: color,
+                    boxShadow: `0 0 6px ${color}`,
+                  }}
+                ></span>
               </div>
-              {agent.name === 'TRENDY' && (
-                <>
-                  <div className="sparkle sparkle-1">✦</div>
-                  <div className="sparkle sparkle-2">✧</div>
-                  <div className="sparkle sparkle-3">✦</div>
-                </>
-              )}
             </div>
-            <div className="card-info">
-              <span className="card-name">{agent.name}</span>
-              <span
-                className="card-status-dot"
-                style={{
-                  background: statusColor[agent.status],
-                  boxShadow: `0 0 6px ${statusColor[agent.status]}`,
-                }}
-              ></span>
-            </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );

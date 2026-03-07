@@ -1,4 +1,11 @@
+import type { CSSProperties } from 'react';
 import type { Agent, Room } from '../types';
+import {
+  spriteStyle, spriteStyleFitH, getAgentSprite,
+  CHAIRS, DESK_BLUE, DESK_RED, DESK_ORANGE,
+  SOFA_BLUE, SOFA_GREEN, PLANT, BULLETIN,
+} from '../sprites';
+import type { SpriteRect } from '../sprites';
 import './OfficeGrid.css';
 
 interface Props {
@@ -7,60 +14,59 @@ interface Props {
   selectedAgent: string | null;
 }
 
+function Sprite({ sprite, scale = 2, style }: { sprite: SpriteRect; scale?: number; style?: CSSProperties }) {
+  return <div style={{ ...spriteStyle(sprite, scale), ...style }} />;
+}
+
 const roomFurniture: Record<string, React.ReactNode> = {
   conference: (
-    <div className="room-interior">
-      <div className="furniture table-conference">
-        <div className="table-top"></div>
-        <div className="chair chair-1"></div>
-        <div className="chair chair-2"></div>
-        <div className="chair chair-3"></div>
-        <div className="chair chair-4"></div>
+    <div className="conf-tables">
+      <div className="scene-row">
+        <Sprite sprite={CHAIRS[0]} scale={3} />
+        <Sprite sprite={CHAIRS[3]} scale={3} />
+        <Sprite sprite={DESK_RED} scale={3} />
+        <Sprite sprite={CHAIRS[1]} scale={3} />
+        <Sprite sprite={CHAIRS[4]} scale={3} />
       </div>
-      <div className="room-decor whiteboard"></div>
+      <div className="scene-row">
+        <Sprite sprite={CHAIRS[2]} scale={3} />
+        <Sprite sprite={CHAIRS[5]} scale={3} />
+        <Sprite sprite={DESK_ORANGE} scale={3} />
+        <Sprite sprite={CHAIRS[0]} scale={3} />
+        <Sprite sprite={CHAIRS[3]} scale={3} />
+      </div>
     </div>
   ),
   jarvis: (
-    <div className="room-interior">
-      <div className="furniture desk-row">
-        <div className="desk">
-          <div className="monitor"></div>
-          <div className="monitor monitor-2"></div>
-        </div>
-        <div className="desk desk-2">
-          <div className="monitor"></div>
-        </div>
+    <div className="room-scene">
+      <div className="scene-row">
+        <Sprite sprite={BULLETIN} scale={3} />
+        <Sprite sprite={DESK_BLUE} scale={2} />
       </div>
-      <div className="room-decor server-rack"></div>
     </div>
   ),
   kitchen: (
-    <div className="room-interior">
-      <div className="furniture kitchen-counter">
-        <div className="appliance fridge"></div>
-        <div className="appliance microwave"></div>
-        <div className="appliance coffee-maker"></div>
+    <div className="room-scene">
+      <div className="scene-row">
+        <Sprite sprite={PLANT} scale={3} />
+        <Sprite sprite={DESK_ORANGE} scale={3} />
       </div>
-      <div className="room-decor kitchen-table"></div>
     </div>
   ),
   gym: (
-    <div className="room-interior">
-      <div className="furniture gym-equipment">
-        <div className="equipment treadmill"></div>
-        <div className="equipment weights"></div>
-        <div className="equipment bench"></div>
+    <div className="room-scene">
+      <div className="scene-row">
+        <Sprite sprite={DESK_RED} scale={3} />
+        <Sprite sprite={CHAIRS[3]} scale={3} />
       </div>
     </div>
   ),
   vibe: (
-    <div className="room-interior">
-      <div className="furniture vibe-setup">
-        <div className="couch"></div>
-        <div className="speaker speaker-1"></div>
-        <div className="speaker speaker-2"></div>
+    <div className="room-scene">
+      <div className="scene-row">
+        <Sprite sprite={SOFA_BLUE} scale={3} />
+        <Sprite sprite={SOFA_GREEN} scale={3} />
       </div>
-      <div className="room-decor plant"></div>
     </div>
   ),
 };
@@ -82,19 +88,22 @@ export default function OfficeGrid({ rooms, agents, selectedAgent }: Props) {
               <span className="room-name">{room.name}</span>
             </div>
             <div className="room-content">
-              {roomFurniture[room.id]}
-              <div className="room-agents">
-                {roomAgents.map(a => (
-                  <div
-                    key={a.id}
-                    className={`room-agent-sprite ${selectedAgent === a.id ? 'agent-highlight' : ''}`}
-                    style={{ borderColor: a.color }}
-                    title={a.name}
-                  >
-                    <span>{a.emoji}</span>
-                    <span className="sprite-label">{a.name}</span>
+              <div className="room-floor">
+                <div className="room-floor-inner">
+                  {roomFurniture[room.id]}
+                  <div className="room-agents">
+                    {roomAgents.map(a => (
+                      <div
+                        key={a.id}
+                        className={`room-agent-sprite ${selectedAgent === a.id ? 'agent-highlight' : ''}`}
+                        title={a.name}
+                      >
+                        <div style={spriteStyleFitH(getAgentSprite(a.id), 60)} />
+                        <span className="sprite-label">{a.name}</span>
+                      </div>
+                    ))}
                   </div>
-                ))}
+                </div>
               </div>
             </div>
           </div>

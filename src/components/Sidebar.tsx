@@ -1,4 +1,5 @@
 import type { Agent, FilterTab } from '../types';
+import { spriteStyleFitH, getAgentSprite } from '../sprites';
 import './Sidebar.css';
 
 interface Props {
@@ -55,10 +56,10 @@ export default function Sidebar({ agents, filter, search, selectedAgent, onFilte
             onClick={() => onAgentClick(agent.id)}
           >
             <div className="agent-row">
-              <span className="agent-avatar" style={{ background: agent.color }}>
-                {agent.emoji}
+              <span className="agent-avatar">
+                <div style={spriteStyleFitH(getAgentSprite(agent.id), 40)} />
               </span>
-              <span className="agent-name">{agent.name}</span>
+              <span className="agent-name">{agent.personName} - {agent.name}</span>
               <span className="agent-status" style={{ background: statusColor[agent.status], color: '#1a1a2e' }}>
                 {agent.status}
               </span>
