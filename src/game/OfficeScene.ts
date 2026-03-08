@@ -181,15 +181,7 @@ export class OfficeScene extends Phaser.Scene {
       comp.setDepth(50);
     }
 
-    // Server room monitors
-    const serverMonPositions = [
-      { x: 850, y: 200 }, { x: 940, y: 200 },
-    ];
-    for (const pos of serverMonPositions) {
-      const comp = this.add.image(pos.x, pos.y, 'computer_sprite');
-      comp.setScale(2.5);
-      comp.setDepth(50);
-    }
+
   }
 
   private createCharacterTextures() {
