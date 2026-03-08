@@ -242,11 +242,11 @@ export class OfficeScene extends Phaser.Scene {
 
     if (this.textures.exists(texKey)) {
       charSprite = this.add.image(0, 0, texKey);
-      charSprite.setScale(3);
+      charSprite.setScale(2.2); // slightly smaller to reduce overlap
       (charSprite as Phaser.GameObjects.Image).setTexture(texKey);
     } else {
       // Fallback: colored rectangle
-      charSprite = this.add.rectangle(0, 0, 16, 24, Phaser.Display.Color.HexStringToColor(agent.color).color);
+      charSprite = this.add.rectangle(0, 0, 14, 20, Phaser.Display.Color.HexStringToColor(agent.color).color);
     }
     // Pixelated rendering for scaled sprites
     if (charSprite instanceof Phaser.GameObjects.Image) {
@@ -398,8 +398,14 @@ export class OfficeScene extends Phaser.Scene {
       spriteData.bubble = null;
     }
 
-    const texts = SPEECH_TEXTS[spriteData.agent.status] || SPEECH_TEXTS.IDLE;
-    const text = texts[Math.floor(Math.random() * texts.length)];
+    // Expanded randomness: mix in status texts + a small random corpus
+    const baseTexts = SPEECH_TEXTS[spriteData.agent.status] || SPEECH_TEXTS.IDLE;
+    const extra = [
+      'LOL', 'brb', 'on it', 'nice!', 'cool 😎', 'ok', 'yep', 'hmm', 'yup', 'got it',
+      'working on it', 'one sec', 'be right back', 'ping me', 'scheduling', 'solid', 'neat'
+    ];
+    const pool = [...baseTexts, ...extra];
+    const text = pool[Math.floor(Math.random() * pool.length)];
 
     const bubbleText = this.add.text(0, 0, text, {
       fontFamily: '"Press Start 2P", monospace',
@@ -420,11 +426,22 @@ export class OfficeScene extends Phaser.Scene {
     const tail = this.add.triangle(0, bubbleH / 2 + 4, -4, 0, 4, 0, 0, 8, 0xffffff);
     tail.setStrokeStyle(1, 0x333333);
 
-    const bubble = this.add.container(
-      spriteData.container.x,
-      spriteData.container.y - 70,
-      [bg, bubbleText, tail]
-    );
+    let bx = spriteData.container.x;
+    let by = spriteData.container.y - 70;
+
+    // Avoid overlapping with other bubbles: simple check and nudge
+    const existingBubbles = Array.from(this.agentSprites.values()).map(s => s.bubble).filter(Boolean) as Phaser.GameObjects.Container[];
+    for (const eb of existingBubbles) {
+      const dx = eb.x - bx;
+      const dy = eb.y - by;
+      const bdist = Math.sqrt(dx * dx + dy * dy);
+      if (bdist < Math.max(bubbleW, bubbleH)) {
+        // nudge horizontally away
+        bx -= Math.sign(dx || 1) * (Math.max(bubbleW, bubbleH) - bdist + 8);
+      }
+    }
+
+    const bubble = this.add.container(bx, by, [bg, bubbleText, tail]);
     bubble.setDepth(2000);
 
     spriteData.bubble = bubble;
@@ -467,8 +484,8 @@ export class OfficeScene extends Phaser.Scene {
     }
 
     // Collision detection — push agents apart if too close
-    const MIN_DIST = 55; // minimum distance between agents
-    const PUSH_FORCE = 1.5;
+    const MIN_DIST = 80; // minimum distance between agents (wider gap)
+    const PUSH_FORCE = 2.5; // stronger push
     const entries = Array.from(this.agentSprites.values());
 
     for (let i = 0; i < entries.length; i++) {

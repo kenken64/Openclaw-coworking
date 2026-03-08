@@ -44,9 +44,9 @@ export function generateOfficeBackground(): string {
   drawRect(60, 180, 200, 80, '#5a3e28');
   drawRect(65, 185, 190, 70, '#6b4c32');
   // Label on wall
-  ctx.fillStyle = '#8888aa';
-  ctx.font = 'bold 11px monospace';
-  ctx.fillText('📋 CONFERENCE', 100, 130);
+  ctx.fillStyle = '#ccccee';
+  ctx.font = 'bold 18px monospace';
+  ctx.fillText('📋 CONFERENCE', 60, 135);
 
   // ── Area 2: Work Desks (top-center-right) ──
   drawRect(320, 110, 450, 250, '#2d2d47', '#4a4a6a');
@@ -67,8 +67,9 @@ export function generateOfficeBackground(): string {
     drawRect(dx + 35, 260, 30, 15, '#1a1a2e');
     drawRect(dx + 38, 263, 24, 9, '#2ecc71');
   }
-  ctx.fillStyle = '#8888aa';
-  ctx.fillText('🖥️ WORK DESKS', 480, 130);
+  ctx.fillStyle = '#ccccee';
+  ctx.font = 'bold 18px monospace';
+  ctx.fillText('🖥️ WORK DESKS', 440, 135);
 
   // ── Area 3: Server/Computing Room (top-right) ──
   drawRect(780, 110, 240, 250, '#1a1a2e', '#4a4a6a');
@@ -83,8 +84,9 @@ export function generateOfficeBackground(): string {
       ctx.fillRect(825 + i * 70, 150 + j * 20, 6, 4);
     }
   }
-  ctx.fillStyle = '#8888aa';
-  ctx.fillText('🖧 SERVER ROOM', 840, 130);
+  ctx.fillStyle = '#ccccee';
+  ctx.font = 'bold 18px monospace';
+  ctx.fillText('🖧 SERVER ROOM', 800, 135);
 
   // ── Area 4: Kitchen (bottom-left) ──
   drawRect(10, 380, 280, 330, '#33334d', '#4a4a6a');
@@ -101,8 +103,9 @@ export function generateOfficeBackground(): string {
   // Table
   drawRect(60, 520, 180, 60, '#5a3e28');
   drawRect(65, 525, 170, 50, '#6b4c32');
-  ctx.fillStyle = '#8888aa';
-  ctx.fillText('🍳 KITCHEN', 100, 400);
+  ctx.fillStyle = '#ccccee';
+  ctx.font = 'bold 18px monospace';
+  ctx.fillText('🍳 KITCHEN', 70, 405);
 
   // ── Area 5: Gym (bottom-center) ──
   drawRect(300, 380, 300, 330, '#2d2d47', '#4a4a6a');
@@ -122,8 +125,9 @@ export function generateOfficeBackground(): string {
   // Yoga mat
   drawRect(350, 600, 120, 60, '#27ae60');
   drawRect(355, 605, 110, 50, '#2ecc71');
-  ctx.fillStyle = '#8888aa';
-  ctx.fillText('💪 GYM', 410, 400);
+  ctx.fillStyle = '#ccccee';
+  ctx.font = 'bold 18px monospace';
+  ctx.fillText('💪 GYM', 390, 405);
 
   // ── Area 6: Vibe / Lounge (bottom-right) ──
   drawRect(610, 380, 410, 330, '#33334d', '#4a4a6a');
