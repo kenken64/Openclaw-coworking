@@ -1,5 +1,5 @@
 // Programmatically generate a pixel-art office background (1280x720)
-// Column-based layout: 5 vertical rooms
+// Balanced 2x3 grid layout: Equal room sizes
 
 export function generateOfficeBackground(): string {
   const W = 1280;
