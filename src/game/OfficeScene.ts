@@ -346,12 +346,14 @@ export class OfficeScene extends Phaser.Scene {
           
           if (charSprite && Math.abs(deltaX) > 10) {
             // Flip sprite based on movement direction (horizontal flip only)
-            if (deltaX > 0) {
-              // Moving right - normal orientation
-              charSprite.setFlipX(false);
-            } else {
-              // Moving left - flip horizontally
-              charSprite.setFlipX(true);
+            if (charSprite instanceof Phaser.GameObjects.Image) {
+              if (deltaX > 0) {
+                // Moving right - normal orientation
+                charSprite.setFlipX(false);
+              } else {
+                // Moving left - flip horizontally
+                charSprite.setFlipX(true);
+              }
             }
           }
 
