@@ -5,43 +5,45 @@ import type { Agent, AgentStatus } from '../types';
 import { CHARACTERS, COMPUTER } from '../sprites';
 
 // ── Area coordinates (where agents go based on status/room) ──
-// Top-down room layout: Left column (200px) + Main workspace (1080px)
+// Balanced 2x3 grid layout: Equal room sizes, better spacing
 const AREA_COORDS: Record<string, { x: number; y: number }[]> = {
   conference: [
-    // Room 1: Conference (top, y: 100-224)
-    { x: 60, y: 140 }, { x: 120, y: 160 }, { x: 80, y: 190 },
-    { x: 150, y: 180 }, { x: 100, y: 210 },
+    // Top-left: Conference room (large space)
+    { x: 120, y: 180 }, { x: 180, y: 200 }, { x: 220, y: 170 },
+    { x: 160, y: 220 }, { x: 200, y: 190 }, { x: 140, y: 240 },
+    { x: 260, y: 180 }, { x: 280, y: 210 },
   ],
   kitchen: [
-    // Room 2: Kitchen (y: 224-348)  
-    { x: 50, y: 250 }, { x: 120, y: 270 }, { x: 170, y: 290 },
-    { x: 80, y: 310 }, { x: 140, y: 330 },
+    // Top-center: Kitchen area
+    { x: 480, y: 170 }, { x: 520, y: 190 }, { x: 560, y: 180 },
+    { x: 500, y: 220 }, { x: 540, y: 200 }, { x: 460, y: 210 },
+    { x: 580, y: 170 }, { x: 520, y: 240 },
   ],
   gym: [
-    // Room 3: Gym (y: 348-472)
-    { x: 60, y: 380 }, { x: 130, y: 400 }, { x: 90, y: 430 },
-    { x: 160, y: 450 }, { x: 120, y: 470 },
+    // Top-right: Gym space
+    { x: 880, y: 180 }, { x: 920, y: 200 }, { x: 960, y: 170 },
+    { x: 900, y: 230 }, { x: 940, y: 210 }, { x: 860, y: 190 },
+    { x: 980, y: 180 }, { x: 920, y: 250 },
   ],
   computing: [
-    // Room 4: Server (y: 472-596)
-    { x: 70, y: 500 }, { x: 140, y: 520 }, { x: 100, y: 550 },
-    { x: 170, y: 570 }, { x: 130, y: 590 },
+    // Bottom-left: Server room
+    { x: 140, y: 480 }, { x: 200, y: 500 }, { x: 180, y: 460 },
+    { x: 220, y: 480 }, { x: 160, y: 520 }, { x: 240, y: 470 },
+    { x: 260, y: 500 }, { x: 180, y: 540 },
   ],
   vibe: [
-    // Room 5: Lounge (y: 596-720)
-    { x: 80, y: 620 }, { x: 150, y: 640 }, { x: 110, y: 670 },
-    { x: 170, y: 690 }, { x: 130, y: 710 },
+    // Bottom-center: Lounge area
+    { x: 480, y: 480 }, { x: 520, y: 500 }, { x: 560, y: 470 },
+    { x: 500, y: 520 }, { x: 540, y: 490 }, { x: 460, y: 510 },
+    { x: 580, y: 480 }, { x: 520, y: 540 },
   ],
   jarvis: [
-    // Main workspace - scattered desks across the large area
-    { x: 280, y: 200 }, { x: 420, y: 220 }, { x: 570, y: 190 }, 
-    { x: 720, y: 240 }, { x: 880, y: 210 }, { x: 1030, y: 230 },
-    { x: 320, y: 390 }, { x: 480, y: 420 }, { x: 630, y: 400 },
-    { x: 780, y: 440 }, { x: 930, y: 390 }, { x: 1080, y: 420 },
-    { x: 350, y: 560 }, { x: 530, y: 550 }, { x: 710, y: 610 },
-    { x: 880, y: 590 }, { x: 1050, y: 570 },
-    // Central meeting area
-    { x: 650, y: 350 }, { x: 750, y: 370 }, { x: 700, y: 320 },
+    // Bottom-right: Main workspace (largest area)
+    { x: 880, y: 460 }, { x: 920, y: 480 }, { x: 960, y: 470 },
+    { x: 900, y: 510 }, { x: 940, y: 490 }, { x: 860, y: 500 },
+    { x: 980, y: 460 }, { x: 1000, y: 490 }, { x: 1020, y: 470 },
+    { x: 840, y: 480 }, { x: 1040, y: 500 }, { x: 920, y: 530 },
+    { x: 1000, y: 520 }, { x: 860, y: 540 }, { x: 980, y: 540 },
   ],
 };
 
@@ -170,29 +172,54 @@ export class OfficeScene extends Phaser.Scene {
     ctx.drawImage(source, COMPUTER.x, COMPUTER.y, COMPUTER.w, COMPUTER.h, 0, 0, COMPUTER.w, COMPUTER.h);
     this.textures.addCanvas('computer_sprite', canvas);
 
-    // Main workspace: Computers on scattered desks
-    const deskPositions = [
-      { x: 280, y: 150 }, { x: 430, y: 180 }, { x: 580, y: 150 }, 
-      { x: 730, y: 200 }, { x: 880, y: 170 }, { x: 1030, y: 190 },
-      { x: 310, y: 350 }, { x: 480, y: 380 }, { x: 630, y: 360 }, 
-      { x: 780, y: 400 }, { x: 930, y: 350 }, { x: 1080, y: 380 },
-      { x: 350, y: 520 }, { x: 530, y: 520 }, { x: 710, y: 580 }, 
-      { x: 880, y: 560 }, { x: 1050, y: 540 },
-    ];
-
-    for (const pos of deskPositions) {
-      const comp = this.add.image(pos.x, pos.y, 'computer_sprite');
-      comp.setScale(2.5);
-      comp.setDepth(50); // Below agents but above floor
-    }
-
-    // Conference room: Small laptop on table
+    // Place computers in each room according to new 2x3 layout
+    const roomW = (1280 - 60) / 3; // 406px each room
+    const roomH = (720 - 140) / 2; // 290px each room
+    
+    // Conference room computers
+    const confX = 20, confY = 100;
     const confCompPositions = [
-      { x: 100, y: 180 }, // On conference table
+      { x: confX + 120, y: confY + 100 }, // On conference table
     ];
     for (const pos of confCompPositions) {
       const comp = this.add.image(pos.x, pos.y, 'computer_sprite');
       comp.setScale(1.8);
+      comp.setDepth(50);
+    }
+
+    // Kitchen computers (minimal)
+    const kitchenX = 20 + roomW + 20, kitchenY = 100;
+    const kitchenCompPositions = [
+      { x: kitchenX + 320, y: kitchenY + 80 }, // Wall mounted tablet
+    ];
+    for (const pos of kitchenCompPositions) {
+      const comp = this.add.image(pos.x, pos.y, 'computer_sprite');
+      comp.setScale(1.2);
+      comp.setDepth(50);
+    }
+
+    // Main workspace computers (bottom-right room)
+    const workX = 20 + roomW * 2 + 40, workY = 100 + roomH + 20;
+    const workCompPositions = [
+      { x: workX + 80, y: workY + 70 }, { x: workX + 200, y: workY + 70 }, { x: workX + 320, y: workY + 70 },
+      { x: workX + 80, y: workY + 150 }, { x: workX + 200, y: workY + 150 }, { x: workX + 320, y: workY + 150 },
+      { x: workX + 80, y: workY + 230 }, { x: workX + 200, y: workY + 230 }, { x: workX + 320, y: workY + 230 },
+    ];
+    for (const pos of workCompPositions) {
+      const comp = this.add.image(pos.x, pos.y, 'computer_sprite');
+      comp.setScale(2.2);
+      comp.setDepth(50);
+    }
+
+    // Server room computers
+    const serverX = 20, serverY = 100 + roomH + 20;
+    const serverCompPositions = [
+      { x: serverX + 100, y: serverY + 200 }, // Control station
+      { x: serverX + 250, y: serverY + 200 }, // Monitoring desk
+    ];
+    for (const pos of serverCompPositions) {
+      const comp = this.add.image(pos.x, pos.y, 'computer_sprite');
+      comp.setScale(2.0);
       comp.setDepth(50);
     }
 
@@ -242,18 +269,29 @@ export class OfficeScene extends Phaser.Scene {
     const container = this.add.container(pos.x, pos.y);
     container.setDepth(100 + pos.y); // Y-sorting
 
-    // Character sprite (scaled up 3x for visibility)
+    // Character sprite with mobile optimization
     const charIdx = AGENT_SPRITE_MAP[agent.id] ?? 0;
     const texKey = `char_${charIdx}`;
     let charSprite: Phaser.GameObjects.Image | Phaser.GameObjects.Rectangle;
 
+    // Mobile detection and scaling
+    const isMobile = window.innerWidth <= 768;
+    const charScale = isMobile ? 4.0 : 2.8; // Much bigger on mobile for visibility
+
     if (this.textures.exists(texKey)) {
       charSprite = this.add.image(0, 0, texKey);
-      charSprite.setScale(2.2); // slightly smaller to reduce overlap
+      charSprite.setScale(charScale);
       (charSprite as Phaser.GameObjects.Image).setTexture(texKey);
+      // Add bright outline for mobile visibility
+      if (isMobile) {
+        charSprite.setTintFill(0xffffff); // Bright tint
+        charSprite.setStroke('#000000', 3); // Black outline
+      }
     } else {
-      // Fallback: colored rectangle
-      charSprite = this.add.rectangle(0, 0, 14, 20, Phaser.Display.Color.HexStringToColor(agent.color).color);
+      // Fallback: larger colored rectangle for mobile
+      const rectSize = isMobile ? 28 : 16;
+      charSprite = this.add.rectangle(0, 0, rectSize, rectSize + 6, Phaser.Display.Color.HexStringToColor(agent.color).color);
+      charSprite.setStrokeStyle(2, 0x000000); // Black border for visibility
     }
     // Pixelated rendering for scaled sprites
     if (charSprite instanceof Phaser.GameObjects.Image) {
@@ -371,12 +409,15 @@ export class OfficeScene extends Phaser.Scene {
             }
           }
 
-          // Animate movement
+          // Animate movement with mobile speed adjustment
+          const isMobile = window.innerWidth <= 768;
+          const moveDuration = isMobile ? 3000 + Math.random() * 2000 : 1500 + Math.random() * 1000; // Slower on mobile
+          
           this.tweens.add({
             targets: spriteData.container,
             x: spriteData.targetX,
             y: spriteData.targetY,
-            duration: 1500 + Math.random() * 1000,
+            duration: moveDuration,
             ease: 'Sine.easeInOut',
             onUpdate: () => {
               // Update depth for Y-sorting
@@ -509,8 +550,9 @@ export class OfficeScene extends Phaser.Scene {
     }
 
     // Collision detection — push agents apart if too close
-    const MIN_DIST = 80; // minimum distance between agents (wider gap)
-    const PUSH_FORCE = 2.5; // stronger push
+    const isMobile = window.innerWidth <= 768;
+    const MIN_DIST = isMobile ? 120 : 80; // Wider gap on mobile for larger characters
+    const PUSH_FORCE = isMobile ? 1.5 : 2.5; // Gentler push on mobile for smoother movement
     const entries = Array.from(this.agentSprites.values());
 
     for (let i = 0; i < entries.length; i++) {
