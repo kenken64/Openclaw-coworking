@@ -2,7 +2,7 @@ import Phaser from 'phaser';
 import { generateOfficeBackground } from './generateBackground';
 import { initialAgents } from '../data';
 import type { Agent, AgentStatus } from '../types';
-import { CHARACTERS } from '../sprites';
+import { CHARACTERS, COMPUTER } from '../sprites';
 
 // ── Area coordinates (where agents go based on status/room) ──
 const AREA_COORDS: Record<string, { x: number; y: number }[]> = {
@@ -136,9 +136,59 @@ export class OfficeScene extends Phaser.Scene {
       loop: true,
     });
 
+    // Place computers on desks using sprite sheet
+    this.placeComputersOnDesks();
+
     // Notify React of initial state
     if (this.onAgentsUpdate) {
       this.onAgentsUpdate([...this.agents]);
+    }
+  }
+
+  private placeComputersOnDesks() {
+    // Extract computer sprite from spritesheet
+    const source = this.textures.get('sprites_sheet').getSourceImage() as HTMLImageElement;
+    if (!source || !source.width) return;
+
+    const canvas = document.createElement('canvas');
+    canvas.width = COMPUTER.w;
+    canvas.height = COMPUTER.h;
+    const ctx = canvas.getContext('2d')!;
+    ctx.imageSmoothingEnabled = false;
+    ctx.drawImage(source, COMPUTER.x, COMPUTER.y, COMPUTER.w, COMPUTER.h, 0, 0, COMPUTER.w, COMPUTER.h);
+    this.textures.addCanvas('computer_sprite', canvas);
+
+    // Desk positions — place a computer on each desk in the work area
+    // Top row of desks (3 desks)
+    const deskPositions = [
+      { x: 395, y: 165 }, { x: 535, y: 165 }, { x: 675, y: 165 }, // top row
+      { x: 395, y: 275 }, { x: 535, y: 275 }, { x: 675, y: 275 }, // bottom row
+    ];
+
+    for (const pos of deskPositions) {
+      const comp = this.add.image(pos.x, pos.y, 'computer_sprite');
+      comp.setScale(3);
+      comp.setDepth(50); // Below agents but above floor
+    }
+
+    // Also place a couple in conference room
+    const confCompPositions = [
+      { x: 120, y: 210 }, { x: 200, y: 210 },
+    ];
+    for (const pos of confCompPositions) {
+      const comp = this.add.image(pos.x, pos.y, 'computer_sprite');
+      comp.setScale(2.5);
+      comp.setDepth(50);
+    }
+
+    // Server room monitors
+    const serverMonPositions = [
+      { x: 850, y: 200 }, { x: 940, y: 200 },
+    ];
+    for (const pos of serverMonPositions) {
+      const comp = this.add.image(pos.x, pos.y, 'computer_sprite');
+      comp.setScale(2.5);
+      comp.setDepth(50);
     }
   }
 
