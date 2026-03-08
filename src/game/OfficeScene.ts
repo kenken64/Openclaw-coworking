@@ -282,10 +282,9 @@ export class OfficeScene extends Phaser.Scene {
       charSprite = this.add.image(0, 0, texKey);
       charSprite.setScale(charScale);
       (charSprite as Phaser.GameObjects.Image).setTexture(texKey);
-      // Add bright outline for mobile visibility
+      // Add bright tint for mobile visibility
       if (isMobile) {
-        charSprite.setTintFill(0xffffff); // Bright tint
-        charSprite.setStroke('#000000', 3); // Black outline
+        charSprite.setTint(0xffffff); // Bright tint for better visibility
       }
     } else {
       // Fallback: larger colored rectangle for mobile
