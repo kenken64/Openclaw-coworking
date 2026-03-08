@@ -341,18 +341,17 @@ export class OfficeScene extends Phaser.Scene {
 
           // Check movement direction and flip sprite accordingly
           const deltaX = spriteData.targetX - spriteData.container.x;
-          const charSprite = spriteData.container.list.find(obj => 
-            obj instanceof Phaser.GameObjects.Image || obj instanceof Phaser.GameObjects.Rectangle
-          );
+          // Find the character sprite (it's usually the second item after shadow)
+          const charSprite = spriteData.container.list[1];
           
-          if (charSprite && Math.abs(deltaX) > 5) {
-            // Flip sprite based on movement direction
+          if (charSprite && Math.abs(deltaX) > 10) {
+            // Flip sprite based on movement direction (horizontal flip only)
             if (deltaX > 0) {
               // Moving right - normal orientation
-              charSprite.setScale(2.2, 2.2);
+              charSprite.setFlipX(false);
             } else {
               // Moving left - flip horizontally
-              charSprite.setScale(-2.2, 2.2);
+              charSprite.setFlipX(true);
             }
           }
 
