@@ -4,6 +4,7 @@
   flex-direction: column;
   overflow: hidden;
   min-width: 0;
+  padding: 8px;
 }
 
 .phaser-game-container {
@@ -15,6 +16,7 @@
   border-radius: 4px;
   overflow: hidden;
   image-rendering: pixelated;
+  touch-action: manipulation; /* Better mobile touch handling */
 }
 
 .phaser-game-container canvas {
@@ -22,4 +24,32 @@
   width: 100% !important;
   height: 100% !important;
   image-rendering: pixelated;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+}
+
+/* Mobile specific styles */
+@media (max-width: 768px) {
+  .phaser-game-wrapper {
+    padding: 4px;
+  }
+  
+  .phaser-game-container {
+    border-width: 1px;
+    border-radius: 2px;
+    max-height: 60vh; /* Prevent game from taking too much vertical space */
+  }
+}
+
+@media (max-width: 480px) {
+  .phaser-game-wrapper {
+    padding: 2px;
+  }
+  
+  .phaser-game-container {
+    border: none;
+    border-radius: 0;
+    max-height: 50vh;
+  }
 }

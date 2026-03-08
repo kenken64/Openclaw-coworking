@@ -19,3 +19,23 @@
   overflow: hidden;
   min-width: 0;
 }
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .app-body {
+    flex-direction: column;
+  }
+  
+  .main-content {
+    order: 1;
+    height: 70vh;
+  }
+  
+  .sidebar {
+    order: 2;
+    width: 100% !important;
+    min-width: 100% !important;
+    height: 30vh;
+    overflow-y: auto;
+  }
+}

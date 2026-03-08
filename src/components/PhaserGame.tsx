@@ -34,7 +34,12 @@ export default function PhaserGame({ onAgentsUpdate }: Props) {
       scene: [scene],
       scale: {
         mode: Phaser.Scale.FIT,
-        autoCenter: Phaser.Scale.CENTER_HORIZONTALLY,
+        autoCenter: Phaser.Scale.CENTER_BOTH,
+        width: 1280,
+        height: 720,
+      },
+      input: {
+        activePointers: 1, // Support touch
       },
     };
 
