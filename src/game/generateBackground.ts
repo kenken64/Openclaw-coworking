@@ -38,158 +38,133 @@ export function generateOfficeBackground(): string {
   // Wall border
   drawRect(0, 98, W, 4, '#4a4a6a');
 
-  // Column dimensions (5 columns)
-  const colWidth = W / 5; // 256px each
-  const roomHeight = H - 100; // 620px (excluding top wall)
+  // Layout: Narrow left column (200px) + large right area (1080px)
+  const leftColWidth = 200;
+  const rightAreaWidth = W - leftColWidth;
+  const roomHeight = (H - 100) / 5; // 124px per room (5 rooms stacked)
 
-  // ── Column 1: Conference Room ──
-  const col1X = 0;
-  drawRect(col1X, 100, colWidth, roomHeight, '#33334d', '#4a4a6a');
-  // Conference table
-  drawRect(col1X + 50, 300, 150, 80, '#5a3e28');
-  drawRect(col1X + 55, 305, 140, 70, '#6b4c32');
-  // Chairs around table
-  for (let i = 0; i < 6; i++) {
-    const angle = (i / 6) * Math.PI * 2;
-    const chairX = col1X + 125 + Math.cos(angle) * 80;
-    const chairY = 340 + Math.sin(angle) * 50;
-    drawRect(chairX - 6, chairY - 6, 12, 12, '#636e72');
-  }
+  // ── Left Column: 5 rooms stacked vertically ──
+  
+  // Room 1: Conference
+  const room1Y = 100;
+  drawRect(0, room1Y, leftColWidth, roomHeight, '#33334d', '#4a4a6a');
+  drawRect(30, room1Y + 40, 80, 30, '#5a3e28');
+  drawRect(35, room1Y + 45, 70, 20, '#6b4c32');
   ctx.fillStyle = '#ccccee';
-  ctx.font = 'bold 20px monospace';
-  ctx.fillText('📋', col1X + 30, 150);
-  ctx.font = 'bold 16px monospace';
-  ctx.fillText('CONFERENCE', col1X + 20, 180);
+  ctx.font = 'bold 12px monospace';
+  ctx.fillText('📋 CONF', 10, room1Y + 20);
 
-  // ── Column 2: Work Desks ──
-  const col2X = colWidth;
-  drawRect(col2X, 100, colWidth, roomHeight, '#2d2d47', '#4a4a6a');
-  // 6 desks in 2 rows
-  for (let row = 0; row < 2; row++) {
-    for (let col = 0; col < 3; col++) {
-      const deskX = col2X + 20 + col * 70;
-      const deskY = 200 + row * 200;
-      drawRect(deskX, deskY, 60, 30, '#5a3e28');
-      drawRect(deskX + 3, deskY + 3, 54, 24, '#6b4c32');
-      // Monitor
-      drawRect(deskX + 20, deskY - 10, 20, 12, '#1a1a2e');
-      drawRect(deskX + 22, deskY - 8, 16, 8, '#3498db');
-    }
-  }
+  // Room 2: Kitchen
+  const room2Y = room1Y + roomHeight;
+  drawRect(0, room2Y, leftColWidth, roomHeight, '#33334d', '#4a4a6a');
+  drawRect(20, room2Y + 30, 60, 15, '#5a3e28');
+  drawRect(140, room2Y + 20, 25, 40, '#b0b0b0');
   ctx.fillStyle = '#ccccee';
-  ctx.font = 'bold 20px monospace';
-  ctx.fillText('🖥️', col2X + 30, 150);
-  ctx.font = 'bold 16px monospace';
-  ctx.fillText('WORK DESKS', col2X + 20, 180);
+  ctx.font = 'bold 12px monospace';
+  ctx.fillText('🍳 KITCHEN', 10, room2Y + 20);
 
-  // ── Column 3: Kitchen ──
-  const col3X = colWidth * 2;
-  drawRect(col3X, 100, colWidth, roomHeight, '#33334d', '#4a4a6a');
-  // Counter
-  drawRect(col3X + 20, 250, 200, 30, '#5a3e28');
-  drawRect(col3X + 25, 255, 190, 20, '#7a5c42');
-  // Coffee machine
-  drawRect(col3X + 40, 230, 25, 20, '#4a4a4a');
-  drawRect(col3X + 43, 235, 19, 10, '#8b4513');
-  // Fridge
-  drawRect(col3X + 180, 200, 35, 50, '#b0b0b0');
-  drawRect(col3X + 183, 205, 29, 20, '#c0c0c0');
-  drawRect(col3X + 183, 230, 29, 15, '#d0d0d0');
-  // Dining table
-  drawRect(col3X + 60, 400, 120, 80, '#5a3e28');
-  drawRect(col3X + 65, 405, 110, 70, '#6b4c32');
-  ctx.fillStyle = '#ccccee';
-  ctx.font = 'bold 20px monospace';
-  ctx.fillText('🍳', col3X + 30, 150);
-  ctx.font = 'bold 16px monospace';
-  ctx.fillText('KITCHEN', col3X + 40, 180);
-
-  // ── Column 4: Gym ──
-  const col4X = colWidth * 3;
-  drawRect(col4X, 100, colWidth, roomHeight, '#2d2d47', '#4a4a6a');
-  // Treadmills
-  drawRect(col4X + 30, 220, 70, 40, '#4a4a4a');
-  drawRect(col4X + 35, 225, 60, 30, '#5a5a5a');
-  drawRect(col4X + 130, 220, 70, 40, '#4a4a4a');
-  drawRect(col4X + 135, 225, 60, 30, '#5a5a5a');
-  // Weights
-  drawRect(col4X + 50, 350, 50, 15, '#6a6a6a');
-  drawRect(col4X + 130, 350, 50, 15, '#6a6a6a');
-  // Yoga mats
-  drawRect(col4X + 40, 500, 80, 40, '#27ae60');
-  drawRect(col4X + 45, 505, 70, 30, '#2ecc71');
-  drawRect(col4X + 130, 500, 80, 40, '#e74c3c');
-  drawRect(col4X + 135, 505, 70, 30, '#f39c12');
+  // Room 3: Gym
+  const room3Y = room2Y + roomHeight;
+  drawRect(0, room3Y, leftColWidth, roomHeight, '#2d2d47', '#4a4a6a');
+  drawRect(30, room3Y + 30, 50, 25, '#4a4a4a');
+  drawRect(120, room3Y + 30, 50, 25, '#4a4a4a');
+  drawRect(50, room3Y + 80, 80, 25, '#27ae60');
   ctx.fillStyle = '#fff1a8';
-  ctx.font = 'bold 20px monospace';
-  ctx.fillText('💪', col4X + 30, 150);
-  ctx.font = 'bold 16px monospace';
-  ctx.fillText('GYM', col4X + 50, 180);
+  ctx.font = 'bold 12px monospace';
+  ctx.fillText('💪 GYM', 10, room3Y + 20);
 
-  // ── Column 5: Server & Lounge ──
-  const col5X = colWidth * 4;
-  drawRect(col5X, 100, colWidth, roomHeight, '#1a1a2e', '#4a4a6a');
-  // Server racks
-  for (let i = 0; i < 2; i++) {
-    drawRect(col5X + 30 + i * 80, 150, 40, 120, '#2d2d47');
-    // Blinking lights
-    for (let j = 0; j < 6; j++) {
+  // Room 4: Server
+  const room4Y = room3Y + roomHeight;
+  drawRect(0, room4Y, leftColWidth, roomHeight, '#1a1a2e', '#4a4a6a');
+  for (let i = 0; i < 3; i++) {
+    drawRect(20 + i * 50, room4Y + 20, 30, 80, '#2d2d47');
+    for (let j = 0; j < 4; j++) {
       const color = ['#2ecc71', '#3498db', '#e74c3c', '#f1c40f'][j % 4];
       ctx.fillStyle = color;
-      ctx.fillRect(col5X + 35 + i * 80, 160 + j * 18, 4, 3);
-      ctx.fillRect(col5X + 55 + i * 80, 160 + j * 18, 4, 3);
+      ctx.fillRect(25 + i * 50, room4Y + 25 + j * 18, 3, 2);
+      ctx.fillRect(40 + i * 50, room4Y + 25 + j * 18, 3, 2);
     }
   }
-  // Lounge area
-  drawRect(col5X + 40, 350, 80, 30, '#8e44ad');
-  drawRect(col5X + 45, 355, 70, 20, '#9b59b6');
-  // Bean bags
+  ctx.fillStyle = '#ccccee';
+  ctx.font = 'bold 12px monospace';
+  ctx.fillText('🖧 SERVER', 10, room4Y + 20);
+
+  // Room 5: Lounge
+  const room5Y = room4Y + roomHeight;
+  drawRect(0, room5Y, leftColWidth, roomHeight, '#33334d', '#4a4a6a');
+  drawRect(30, room5Y + 30, 60, 20, '#8e44ad');
   ctx.beginPath();
-  ctx.arc(col5X + 80, 450, 20, 0, Math.PI * 2);
+  ctx.arc(120, room5Y + 50, 15, 0, Math.PI * 2);
   ctx.fillStyle = '#e74c3c';
   ctx.fill();
   ctx.beginPath();
-  ctx.arc(col5X + 150, 470, 20, 0, Math.PI * 2);
+  ctx.arc(150, room5Y + 70, 15, 0, Math.PI * 2);
   ctx.fillStyle = '#3498db';
   ctx.fill();
   ctx.fillStyle = '#ccccee';
-  ctx.font = 'bold 20px monospace';
-  ctx.fillText('🖧', col5X + 30, 150);
-  ctx.font = 'bold 16px monospace';
-  ctx.fillText('SERVER', col5X + 20, 180);
+  ctx.font = 'bold 12px monospace';
+  ctx.fillText('🎵 LOUNGE', 10, room5Y + 20);
 
-  // ── Column separators ──
+  // ── Right Area: Large collaboration space ──
+  drawRect(leftColWidth, 100, rightAreaWidth, H - 100, '#2d2d47', '#4a4a6a');
+  
+  // Multiple work desks scattered around
+  const deskPositions = [
+    [250, 150], [400, 180], [550, 150], [700, 200], [850, 170], [1000, 190],
+    [280, 350], [450, 380], [600, 360], [750, 400], [900, 350], [1050, 380],
+    [320, 550], [500, 520], [680, 580], [850, 560], [1020, 540],
+  ];
+  
+  for (const [x, y] of deskPositions) {
+    drawRect(x, y, 80, 40, '#5a3e28');
+    drawRect(x + 5, y + 5, 70, 30, '#6b4c32');
+    // Monitor
+    drawRect(x + 25, y - 5, 30, 15, '#1a1a2e');
+    drawRect(x + 28, y - 2, 24, 9, '#3498db');
+  }
+  
+  // Central meeting area
+  drawRect(600, 300, 200, 120, '#5a3e28');
+  drawRect(605, 305, 190, 110, '#6b4c32');
+  
+  // Label for work area
+  ctx.fillStyle = '#ccccee';
+  ctx.font = 'bold 24px monospace';
+  ctx.fillText('🖥️ MAIN WORKSPACE', 400, 140);
+
+  // ── Column separator ──
   ctx.strokeStyle = '#4a4a6a';
-  ctx.lineWidth = 3;
+  ctx.lineWidth = 4;
+  ctx.beginPath();
+  ctx.moveTo(leftColWidth, 100);
+  ctx.lineTo(leftColWidth, H);
+  ctx.stroke();
+
+  // ── Room separators in left column ──
+  ctx.lineWidth = 2;
   for (let i = 1; i < 5; i++) {
-    const x = colWidth * i;
+    const y = 100 + roomHeight * i;
     ctx.beginPath();
-    ctx.moveTo(x, 100);
-    ctx.lineTo(x, H);
+    ctx.moveTo(0, y);
+    ctx.lineTo(leftColWidth, y);
     ctx.stroke();
   }
 
   // ── Wall decorations ──
-  // Plants on top wall
-  for (let i = 0; i < 5; i++) {
-    const px = colWidth * i + colWidth / 2 - 10;
-    drawRect(px, 85, 8, 15, '#654321');
-    ctx.beginPath();
-    ctx.arc(px + 4, 80, 8, 0, Math.PI * 2);
-    ctx.fillStyle = '#27ae60';
-    ctx.fill();
-  }
+  // Plant in left column
+  drawRect(10, 85, 8, 15, '#654321');
+  ctx.beginPath();
+  ctx.arc(14, 80, 8, 0, Math.PI * 2);
+  ctx.fillStyle = '#27ae60';
+  ctx.fill();
 
-  // Windows above each room
-  for (let i = 0; i < 5; i++) {
-    const wx = colWidth * i + 20;
-    drawRect(wx, 15, 60, 50, '#1a1a3e');
-    drawRect(wx + 3, 18, 54, 44, '#2c3e50');
-    // Stars
-    ctx.fillStyle = '#f1c40f';
-    ctx.fillRect(wx + 15, 30, 2, 2);
-    ctx.fillRect(wx + 35, 25, 2, 2);
-    ctx.fillRect(wx + 45, 40, 2, 2);
+  // Large window in work area
+  drawRect(leftColWidth + 50, 15, 200, 60, '#1a1a3e');
+  drawRect(leftColWidth + 53, 18, 194, 54, '#2c3e50');
+  // Stars
+  ctx.fillStyle = '#f1c40f';
+  for (let i = 0; i < 8; i++) {
+    ctx.fillRect(leftColWidth + 70 + i * 20, 30 + Math.random() * 20, 2, 2);
   }
 
   return canvas.toDataURL('image/png');

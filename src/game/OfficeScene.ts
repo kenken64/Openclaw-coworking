@@ -5,38 +5,43 @@ import type { Agent, AgentStatus } from '../types';
 import { CHARACTERS, COMPUTER } from '../sprites';
 
 // ── Area coordinates (where agents go based on status/room) ──
-// Column-based coordinates (5 vertical columns, 256px wide each)
+// Top-down room layout: Left column (200px) + Main workspace (1080px)
 const AREA_COORDS: Record<string, { x: number; y: number }[]> = {
   conference: [
-    // Column 1: Conference room (0-256)
-    { x: 60, y: 400 }, { x: 180, y: 420 }, { x: 120, y: 500 },
-    { x: 200, y: 480 }, { x: 80, y: 550 }, { x: 160, y: 580 },
-  ],
-  jarvis: [
-    // Column 2: Work desks (256-512)  
-    { x: 300, y: 240 }, { x: 380, y: 240 }, { x: 460, y: 240 },
-    { x: 300, y: 440 }, { x: 380, y: 440 }, { x: 460, y: 440 },
-    { x: 340, y: 340 }, { x: 420, y: 340 },
+    // Room 1: Conference (top, y: 100-224)
+    { x: 60, y: 140 }, { x: 120, y: 160 }, { x: 80, y: 190 },
+    { x: 150, y: 180 }, { x: 100, y: 210 },
   ],
   kitchen: [
-    // Column 3: Kitchen (512-768)
-    { x: 570, y: 320 }, { x: 650, y: 300 }, { x: 720, y: 330 },
-    { x: 600, y: 500 }, { x: 680, y: 520 }, { x: 730, y: 480 },
+    // Room 2: Kitchen (y: 224-348)  
+    { x: 50, y: 250 }, { x: 120, y: 270 }, { x: 170, y: 290 },
+    { x: 80, y: 310 }, { x: 140, y: 330 },
   ],
   gym: [
-    // Column 4: Gym (768-1024)
-    { x: 820, y: 300 }, { x: 900, y: 280 }, { x: 980, y: 320 },
-    { x: 850, y: 420 }, { x: 930, y: 400 }, { x: 860, y: 550 },
+    // Room 3: Gym (y: 348-472)
+    { x: 60, y: 380 }, { x: 130, y: 400 }, { x: 90, y: 430 },
+    { x: 160, y: 450 }, { x: 120, y: 470 },
   ],
   computing: [
-    // Column 5: Server area (1024-1280)
-    { x: 1080, y: 200 }, { x: 1150, y: 220 }, { x: 1200, y: 240 },
-    { x: 1100, y: 300 }, { x: 1180, y: 320 },
+    // Room 4: Server (y: 472-596)
+    { x: 70, y: 500 }, { x: 140, y: 520 }, { x: 100, y: 550 },
+    { x: 170, y: 570 }, { x: 130, y: 590 },
   ],
   vibe: [
-    // Column 5: Lounge area (1024-1280)
-    { x: 1080, y: 480 }, { x: 1150, y: 500 }, { x: 1200, y: 460 },
-    { x: 1100, y: 550 }, { x: 1180, y: 570 }, { x: 1220, y: 520 },
+    // Room 5: Lounge (y: 596-720)
+    { x: 80, y: 620 }, { x: 150, y: 640 }, { x: 110, y: 670 },
+    { x: 170, y: 690 }, { x: 130, y: 710 },
+  ],
+  jarvis: [
+    // Main workspace - scattered desks across the large area
+    { x: 280, y: 200 }, { x: 420, y: 220 }, { x: 570, y: 190 }, 
+    { x: 720, y: 240 }, { x: 880, y: 210 }, { x: 1030, y: 230 },
+    { x: 320, y: 390 }, { x: 480, y: 420 }, { x: 630, y: 400 },
+    { x: 780, y: 440 }, { x: 930, y: 390 }, { x: 1080, y: 420 },
+    { x: 350, y: 560 }, { x: 530, y: 550 }, { x: 710, y: 610 },
+    { x: 880, y: 590 }, { x: 1050, y: 570 },
+    // Central meeting area
+    { x: 650, y: 350 }, { x: 750, y: 370 }, { x: 700, y: 320 },
   ],
 };
 
@@ -165,10 +170,14 @@ export class OfficeScene extends Phaser.Scene {
     ctx.drawImage(source, COMPUTER.x, COMPUTER.y, COMPUTER.w, COMPUTER.h, 0, 0, COMPUTER.w, COMPUTER.h);
     this.textures.addCanvas('computer_sprite', canvas);
 
-    // Column 2: Work desk computers (6 desks)
+    // Main workspace: Computers on scattered desks
     const deskPositions = [
-      { x: 310, y: 190 }, { x: 380, y: 190 }, { x: 450, y: 190 }, // top row
-      { x: 310, y: 390 }, { x: 380, y: 390 }, { x: 450, y: 390 }, // bottom row
+      { x: 280, y: 150 }, { x: 430, y: 180 }, { x: 580, y: 150 }, 
+      { x: 730, y: 200 }, { x: 880, y: 170 }, { x: 1030, y: 190 },
+      { x: 310, y: 350 }, { x: 480, y: 380 }, { x: 630, y: 360 }, 
+      { x: 780, y: 400 }, { x: 930, y: 350 }, { x: 1080, y: 380 },
+      { x: 350, y: 520 }, { x: 530, y: 520 }, { x: 710, y: 580 }, 
+      { x: 880, y: 560 }, { x: 1050, y: 540 },
     ];
 
     for (const pos of deskPositions) {
@@ -177,13 +186,13 @@ export class OfficeScene extends Phaser.Scene {
       comp.setDepth(50); // Below agents but above floor
     }
 
-    // Column 1: Conference room laptop
+    // Conference room: Small laptop on table
     const confCompPositions = [
-      { x: 125, y: 290 }, // On conference table
+      { x: 100, y: 180 }, // On conference table
     ];
     for (const pos of confCompPositions) {
       const comp = this.add.image(pos.x, pos.y, 'computer_sprite');
-      comp.setScale(2);
+      comp.setScale(1.8);
       comp.setDepth(50);
     }
 
