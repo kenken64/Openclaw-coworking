@@ -5,32 +5,38 @@ import type { Agent, AgentStatus } from '../types';
 import { CHARACTERS, COMPUTER } from '../sprites';
 
 // ── Area coordinates (where agents go based on status/room) ──
+// Column-based coordinates (5 vertical columns, 256px wide each)
 const AREA_COORDS: Record<string, { x: number; y: number }[]> = {
   conference: [
-    // moved down so agents stand IN FRONT of table, not on it
-    { x: 80, y: 260 }, { x: 170, y: 250 }, { x: 260, y: 270 },
-    { x: 110, y: 320 }, { x: 220, y: 310 },
+    // Column 1: Conference room (0-256)
+    { x: 60, y: 400 }, { x: 180, y: 420 }, { x: 120, y: 500 },
+    { x: 200, y: 480 }, { x: 80, y: 550 }, { x: 160, y: 580 },
   ],
-  jarvis: [  // Work desks — wider gaps
-    { x: 380, y: 180 }, { x: 480, y: 180 }, { x: 580, y: 180 },
-    { x: 380, y: 310 }, { x: 480, y: 310 }, { x: 580, y: 310 },
-    { x: 680, y: 180 }, { x: 680, y: 310 },
-  ],
-  computing: [ // Server room — wider spacing
-    { x: 830, y: 180 }, { x: 940, y: 190 }, { x: 850, y: 290 },
-    { x: 960, y: 280 }, { x: 900, y: 350 },
+  jarvis: [
+    // Column 2: Work desks (256-512)  
+    { x: 300, y: 240 }, { x: 380, y: 240 }, { x: 460, y: 240 },
+    { x: 300, y: 440 }, { x: 380, y: 440 }, { x: 460, y: 440 },
+    { x: 340, y: 340 }, { x: 420, y: 340 },
   ],
   kitchen: [
-    { x: 80, y: 470 }, { x: 180, y: 530 }, { x: 280, y: 490 },
-    { x: 120, y: 590 }, { x: 240, y: 570 },
+    // Column 3: Kitchen (512-768)
+    { x: 570, y: 320 }, { x: 650, y: 300 }, { x: 720, y: 330 },
+    { x: 600, y: 500 }, { x: 680, y: 520 }, { x: 730, y: 480 },
   ],
   gym: [
-    { x: 370, y: 470 }, { x: 470, y: 510 }, { x: 570, y: 470 },
-    { x: 400, y: 580 }, { x: 520, y: 570 },
+    // Column 4: Gym (768-1024)
+    { x: 820, y: 300 }, { x: 900, y: 280 }, { x: 980, y: 320 },
+    { x: 850, y: 420 }, { x: 930, y: 400 }, { x: 860, y: 550 },
+  ],
+  computing: [
+    // Column 5: Server area (1024-1280)
+    { x: 1080, y: 200 }, { x: 1150, y: 220 }, { x: 1200, y: 240 },
+    { x: 1100, y: 300 }, { x: 1180, y: 320 },
   ],
   vibe: [
-    { x: 700, y: 460 }, { x: 800, y: 500 }, { x: 900, y: 470 },
-    { x: 720, y: 560 }, { x: 830, y: 580 }, { x: 950, y: 540 },
+    // Column 5: Lounge area (1024-1280)
+    { x: 1080, y: 480 }, { x: 1150, y: 500 }, { x: 1200, y: 460 },
+    { x: 1100, y: 550 }, { x: 1180, y: 570 }, { x: 1220, y: 520 },
   ],
 };
 
@@ -159,26 +165,25 @@ export class OfficeScene extends Phaser.Scene {
     ctx.drawImage(source, COMPUTER.x, COMPUTER.y, COMPUTER.w, COMPUTER.h, 0, 0, COMPUTER.w, COMPUTER.h);
     this.textures.addCanvas('computer_sprite', canvas);
 
-    // Desk positions — place a computer on each desk in the work area
-    // Top row of desks (3 desks)
+    // Column 2: Work desk computers (6 desks)
     const deskPositions = [
-      { x: 395, y: 165 }, { x: 535, y: 165 }, { x: 675, y: 165 }, // top row
-      { x: 395, y: 275 }, { x: 535, y: 275 }, { x: 675, y: 275 }, // bottom row
+      { x: 310, y: 190 }, { x: 380, y: 190 }, { x: 450, y: 190 }, // top row
+      { x: 310, y: 390 }, { x: 380, y: 390 }, { x: 450, y: 390 }, // bottom row
     ];
 
     for (const pos of deskPositions) {
       const comp = this.add.image(pos.x, pos.y, 'computer_sprite');
-      comp.setScale(3);
+      comp.setScale(2.5);
       comp.setDepth(50); // Below agents but above floor
     }
 
-    // Also place a couple in conference room
+    // Column 1: Conference room laptop
     const confCompPositions = [
-      { x: 120, y: 210 }, { x: 200, y: 210 },
+      { x: 125, y: 290 }, // On conference table
     ];
     for (const pos of confCompPositions) {
       const comp = this.add.image(pos.x, pos.y, 'computer_sprite');
-      comp.setScale(2.5);
+      comp.setScale(2);
       comp.setDepth(50);
     }
 
