@@ -183,8 +183,8 @@ export class OfficeScene extends Phaser.Scene {
     ];
     for (const pos of confCompPositions) {
       const comp = this.add.image(pos.x, pos.y, 'computer_sprite');
-      comp.setScale(1.8);
-      comp.setDepth(50);
+      comp.setScale(1.5); // Consistent smaller scale
+      comp.setDepth(60); // Higher depth to appear on top of tables
     }
 
     // Kitchen computers (minimal)
@@ -194,8 +194,8 @@ export class OfficeScene extends Phaser.Scene {
     ];
     for (const pos of kitchenCompPositions) {
       const comp = this.add.image(pos.x, pos.y, 'computer_sprite');
-      comp.setScale(1.2);
-      comp.setDepth(50);
+      comp.setScale(1.0); // Small tablet scale
+      comp.setDepth(60); // Higher depth to appear on top
     }
 
     // Main workspace computers (bottom-right room)
@@ -207,8 +207,8 @@ export class OfficeScene extends Phaser.Scene {
     ];
     for (const pos of workCompPositions) {
       const comp = this.add.image(pos.x, pos.y, 'computer_sprite');
-      comp.setScale(2.2);
-      comp.setDepth(50);
+      comp.setScale(1.5); // Smaller scale to fit properly on desks
+      comp.setDepth(60); // Higher depth to appear on top of desks
     }
 
     // Server room computers
@@ -219,8 +219,8 @@ export class OfficeScene extends Phaser.Scene {
     ];
     for (const pos of serverCompPositions) {
       const comp = this.add.image(pos.x, pos.y, 'computer_sprite');
-      comp.setScale(2.0);
-      comp.setDepth(50);
+      comp.setScale(1.4); // Smaller control station monitors
+      comp.setDepth(60); // Higher depth to appear on top of consoles
     }
 
 
