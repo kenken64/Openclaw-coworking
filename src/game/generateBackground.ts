@@ -139,7 +139,7 @@ export function generateOfficeBackground(): string {
   }
   ctx.fillStyle = '#ccccee';
   ctx.font = 'bold 16px monospace';
-  ctx.fillText('🖥️ WORKSPACE', workX + 10, workY + 30);
+  ctx.fillText('🖥️ WORKSPACE', workX + 10, workY + 20); // Moved higher to avoid desk overlap
 
   // ── Grid separators ──
   ctx.strokeStyle = '#4a4a6a';
