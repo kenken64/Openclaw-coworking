@@ -165,7 +165,7 @@ export function generateOfficeBackground(): string {
   // ── Decorations ──
   // Plants along the wall
   const plantPositions = [
-    [15, 95], [310, 95], [770, 95], [1010, 95], [1240, 95],
+    [15, 95], [310, 95], [770, 95], [980, 95], [1240, 95],
   ];
   for (const [px, py] of plantPositions) {
     drawRect(px, py - 15, 12, 20, '#654321');

@@ -7,8 +7,9 @@ import { CHARACTERS, COMPUTER } from '../sprites';
 // ── Area coordinates (where agents go based on status/room) ──
 const AREA_COORDS: Record<string, { x: number; y: number }[]> = {
   conference: [
-    { x: 80, y: 200 }, { x: 170, y: 190 }, { x: 260, y: 210 },
-    { x: 110, y: 280 }, { x: 220, y: 270 },
+    // moved down so agents stand IN FRONT of table, not on it
+    { x: 80, y: 260 }, { x: 170, y: 250 }, { x: 260, y: 270 },
+    { x: 110, y: 320 }, { x: 220, y: 310 },
   ],
   jarvis: [  // Work desks — wider gaps
     { x: 380, y: 180 }, { x: 480, y: 180 }, { x: 580, y: 180 },
