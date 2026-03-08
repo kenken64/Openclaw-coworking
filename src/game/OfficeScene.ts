@@ -339,6 +339,23 @@ export class OfficeScene extends Phaser.Scene {
           spriteData.targetX = pos.x + (Math.random() - 0.5) * 60;
           spriteData.targetY = pos.y + (Math.random() - 0.5) * 50;
 
+          // Check movement direction and flip sprite accordingly
+          const deltaX = spriteData.targetX - spriteData.container.x;
+          const charSprite = spriteData.container.list.find(obj => 
+            obj instanceof Phaser.GameObjects.Image || obj instanceof Phaser.GameObjects.Rectangle
+          );
+          
+          if (charSprite && Math.abs(deltaX) > 5) {
+            // Flip sprite based on movement direction
+            if (deltaX > 0) {
+              // Moving right - normal orientation
+              charSprite.setScale(2.2, 2.2);
+            } else {
+              // Moving left - flip horizontally
+              charSprite.setScale(-2.2, 2.2);
+            }
+          }
+
           // Animate movement
           this.tweens.add({
             targets: spriteData.container,
