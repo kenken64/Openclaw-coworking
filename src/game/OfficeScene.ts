@@ -7,29 +7,29 @@ import { CHARACTERS } from '../sprites';
 // ── Area coordinates (where agents go based on status/room) ──
 const AREA_COORDS: Record<string, { x: number; y: number }[]> = {
   conference: [
-    { x: 100, y: 220 }, { x: 160, y: 200 }, { x: 200, y: 240 },
-    { x: 130, y: 260 }, { x: 250, y: 220 },
+    { x: 80, y: 200 }, { x: 170, y: 190 }, { x: 260, y: 210 },
+    { x: 110, y: 280 }, { x: 220, y: 270 },
   ],
-  jarvis: [  // Work desks
-    { x: 400, y: 200 }, { x: 470, y: 200 }, { x: 540, y: 200 },
-    { x: 400, y: 300 }, { x: 470, y: 300 }, { x: 540, y: 300 },
-    { x: 620, y: 200 }, { x: 690, y: 300 },
+  jarvis: [  // Work desks — wider gaps
+    { x: 380, y: 180 }, { x: 480, y: 180 }, { x: 580, y: 180 },
+    { x: 380, y: 310 }, { x: 480, y: 310 }, { x: 580, y: 310 },
+    { x: 680, y: 180 }, { x: 680, y: 310 },
   ],
-  computing: [ // Server room
-    { x: 850, y: 200 }, { x: 920, y: 220 }, { x: 870, y: 270 },
-    { x: 940, y: 250 }, { x: 880, y: 310 },
+  computing: [ // Server room — wider spacing
+    { x: 830, y: 180 }, { x: 940, y: 190 }, { x: 850, y: 290 },
+    { x: 960, y: 280 }, { x: 900, y: 350 },
   ],
   kitchen: [
-    { x: 100, y: 480 }, { x: 150, y: 520 }, { x: 200, y: 500 },
-    { x: 130, y: 560 }, { x: 230, y: 540 },
+    { x: 80, y: 470 }, { x: 180, y: 530 }, { x: 280, y: 490 },
+    { x: 120, y: 590 }, { x: 240, y: 570 },
   ],
   gym: [
-    { x: 380, y: 480 }, { x: 440, y: 500 }, { x: 500, y: 480 },
-    { x: 400, y: 560 }, { x: 480, y: 550 },
+    { x: 370, y: 470 }, { x: 470, y: 510 }, { x: 570, y: 470 },
+    { x: 400, y: 580 }, { x: 520, y: 570 },
   ],
   vibe: [
-    { x: 700, y: 470 }, { x: 760, y: 500 }, { x: 820, y: 480 },
-    { x: 680, y: 530 }, { x: 750, y: 560 }, { x: 880, y: 500 },
+    { x: 700, y: 460 }, { x: 800, y: 500 }, { x: 900, y: 470 },
+    { x: 720, y: 560 }, { x: 830, y: 580 }, { x: 950, y: 540 },
   ],
 };
 
@@ -292,9 +292,9 @@ export class OfficeScene extends Phaser.Scene {
           const idx = areaAgents.indexOf(agent);
           const pos = this.getPositionInArea(area, idx >= 0 ? idx : 0);
 
-          // Add some randomness
-          spriteData.targetX = pos.x + (Math.random() - 0.5) * 30;
-          spriteData.targetY = pos.y + (Math.random() - 0.5) * 20;
+          // Add more randomness to prevent stacking
+          spriteData.targetX = pos.x + (Math.random() - 0.5) * 60;
+          spriteData.targetY = pos.y + (Math.random() - 0.5) * 50;
 
           // Animate movement
           this.tweens.add({
@@ -413,6 +413,43 @@ export class OfficeScene extends Phaser.Scene {
       if (spriteData.bubble) {
         spriteData.bubble.x = spriteData.container.x;
         spriteData.bubble.y = spriteData.container.y - 70;
+      }
+    }
+
+    // Collision detection — push agents apart if too close
+    const MIN_DIST = 55; // minimum distance between agents
+    const PUSH_FORCE = 1.5;
+    const entries = Array.from(this.agentSprites.values());
+
+    for (let i = 0; i < entries.length; i++) {
+      for (let j = i + 1; j < entries.length; j++) {
+        const a = entries[i].container;
+        const b = entries[j].container;
+        const dx = b.x - a.x;
+        const dy = b.y - a.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+
+        if (dist < MIN_DIST && dist > 0) {
+          // Normalize and push apart
+          const nx = dx / dist;
+          const ny = dy / dist;
+          const overlap = (MIN_DIST - dist) * 0.5 * PUSH_FORCE;
+
+          a.x -= nx * overlap;
+          a.y -= ny * overlap;
+          b.x += nx * overlap;
+          b.y += ny * overlap;
+
+          // Clamp to game bounds
+          a.x = Phaser.Math.Clamp(a.x, 40, 1240);
+          a.y = Phaser.Math.Clamp(a.y, 100, 650);
+          b.x = Phaser.Math.Clamp(b.x, 40, 1240);
+          b.y = Phaser.Math.Clamp(b.y, 100, 650);
+
+          // Update depth for Y-sorting
+          a.setDepth(100 + a.y);
+          b.setDepth(100 + b.y);
+        }
       }
     }
   }
