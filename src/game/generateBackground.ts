@@ -125,9 +125,9 @@ export function generateOfficeBackground(): string {
   // Yoga mat
   drawRect(350, 600, 120, 60, '#27ae60');
   drawRect(355, 605, 110, 50, '#2ecc71');
-  ctx.fillStyle = '#ccccee';
-  ctx.font = 'bold 18px monospace';
-  ctx.fillText('💪 GYM', 390, 405);
+  ctx.fillStyle = '#fff1a8';
+  ctx.font = 'bold 22px monospace';
+  ctx.fillText('💪 GYM', 380, 410);
 
   // ── Area 6: Vibe / Lounge (bottom-right) ──
   drawRect(610, 380, 410, 330, '#33334d', '#4a4a6a');
