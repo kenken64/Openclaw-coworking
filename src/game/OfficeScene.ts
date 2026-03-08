@@ -179,7 +179,8 @@ export class OfficeScene extends Phaser.Scene {
     // Conference room computers
     const confX = 20, confY = 100;
     const confCompPositions = [
-      { x: confX + 120, y: confY + 100 }, // On conference table
+      { x: confX + 160, y: confY + 95 }, // Center of oval conference table
+      { x: confX + 60, y: confY + 35 }, // Laptop on whiteboard counter
     ];
     for (const pos of confCompPositions) {
       const comp = this.add.image(pos.x, pos.y, 'computer_sprite');
@@ -190,7 +191,8 @@ export class OfficeScene extends Phaser.Scene {
     // Kitchen computers (minimal)
     const kitchenX = 20 + roomW + 20, kitchenY = 100;
     const kitchenCompPositions = [
-      { x: kitchenX + 320, y: kitchenY + 80 }, // Wall mounted tablet
+      { x: kitchenX + 240, y: kitchenY + 110 }, // Tablet on kitchen island
+      { x: kitchenX + 100, y: kitchenY + 42 }, // Small display above coffee station
     ];
     for (const pos of kitchenCompPositions) {
       const comp = this.add.image(pos.x, pos.y, 'computer_sprite');
@@ -198,12 +200,18 @@ export class OfficeScene extends Phaser.Scene {
       comp.setDepth(60); // Higher depth to appear on top
     }
 
-    // Main workspace computers (bottom-right room)
+    // Main workspace computers (updated for new desk layout)
     const workX = 20 + roomW * 2 + 40, workY = 100 + roomH + 20;
     const workCompPositions = [
-      { x: workX + 80, y: workY + 70 }, { x: workX + 200, y: workY + 70 }, { x: workX + 320, y: workY + 70 },
-      { x: workX + 80, y: workY + 150 }, { x: workX + 200, y: workY + 150 }, { x: workX + 320, y: workY + 150 },
-      { x: workX + 80, y: workY + 230 }, { x: workX + 200, y: workY + 230 }, { x: workX + 320, y: workY + 230 },
+      // Individual workstations
+      { x: workX + 65, y: workY + 58 }, { x: workX + 165, y: workY + 58 }, { x: workX + 265, y: workY + 58 },
+      { x: workX + 73, y: workY + 120 }, { x: workX + 178, y: workY + 123 }, { x: workX + 280, y: workY + 120 },
+      // Hot desks (laptops on communal table)
+      { x: workX + 80, y: workY + 185 }, { x: workX + 120, y: workY + 185 }, { x: workX + 170, y: workY + 185 },
+      // Collaborative area monitor
+      { x: workX + 350, y: workY + 100 },
+      // Focus pod screen
+      { x: workX + 275, y: workY + 190 },
     ];
     for (const pos of workCompPositions) {
       const comp = this.add.image(pos.x, pos.y, 'computer_sprite');
@@ -214,8 +222,9 @@ export class OfficeScene extends Phaser.Scene {
     // Server room computers
     const serverX = 20, serverY = 100 + roomH + 20;
     const serverCompPositions = [
-      { x: serverX + 100, y: serverY + 200 }, // Control station
-      { x: serverX + 250, y: serverY + 200 }, // Monitoring desk
+      { x: serverX + 340, y: serverY + 90 }, // Central control console
+      { x: serverX + 65, y: serverY + 35 }, // Rack monitoring station
+      { x: serverX + 145, y: serverY + 35 }, // Second monitoring point
     ];
     for (const pos of serverCompPositions) {
       const comp = this.add.image(pos.x, pos.y, 'computer_sprite');
