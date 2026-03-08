@@ -135,9 +135,7 @@ export function generateOfficeBackground(): string {
   for (const [x, y] of deskPositions) {
     drawRect(x, y, 80, 40, '#5a3e28');
     drawRect(x + 5, y + 5, 70, 30, '#6b4c32');
-    // Monitor
-    drawRect(x + 25, y - 5, 30, 15, '#1a1a2e');
-    drawRect(x + 28, y - 2, 24, 9, '#3498db');
+    // Computer sprites will be placed by OfficeScene
   }
   ctx.fillStyle = '#ccccee';
   ctx.font = 'bold 16px monospace';
