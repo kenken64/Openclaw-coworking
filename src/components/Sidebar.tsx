@@ -59,7 +59,10 @@ export default function Sidebar({ agents, filter, search, selectedAgent, onFilte
               <span className="agent-avatar">
                 <div style={spriteStyleFitH(getAgentSprite(agent.id), 40)} />
               </span>
-              <span className="agent-name">{agent.personName} - {agent.name}</span>
+              <span className="agent-name">
+                <span className="agent-person">{agent.personName}</span>
+                <span className="agent-codename">{agent.name}</span>
+              </span>
               <span className="agent-status" style={{ background: statusColor[agent.status], color: '#1a1a2e' }}>
                 {agent.status}
               </span>
