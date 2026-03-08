@@ -1,0 +1,140 @@
+.bottom-panels {
+  display: flex;
+  gap: 8px;
+  padding: 8px;
+  background: #0d0d1a;
+  border-top: 2px solid #4a4a6a;
+  max-height: 200px;
+  overflow: hidden;
+}
+
+.panel {
+  flex: 1;
+  background: #1a1a2e;
+  border: 1px solid #2d2d47;
+  border-radius: 4px;
+  padding: 8px 12px;
+  overflow-y: auto;
+}
+
+.panel-title {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 9px;
+  color: #ffa502;
+  margin: 0 0 8px 0;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Status Panel */
+.status-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+
+.status-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px;
+  background: #2d2d47;
+  border-radius: 3px;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 8px;
+}
+
+.status-item.total {
+  grid-column: 1 / -1;
+  justify-content: center;
+  background: #33334d;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.status-label {
+  color: #aaa;
+  flex: 1;
+}
+
+.status-count {
+  color: #fff;
+  font-weight: bold;
+  font-size: 11px;
+}
+
+/* Agent Roster Panel */
+.agent-roster {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.roster-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 6px;
+  background: #2d2d47;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: background 0.2s;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 7px;
+}
+
+.roster-item:hover {
+  background: #3d3d5c;
+}
+
+.roster-selected {
+  background: #3d3d5c;
+  border: 1px solid #ffa502;
+}
+
+.roster-emoji {
+  font-size: 12px;
+}
+
+.roster-name {
+  color: #fff;
+  min-width: 55px;
+}
+
+.roster-person {
+  color: #888;
+  font-size: 6px;
+  min-width: 60px;
+}
+
+.roster-status {
+  font-size: 6px;
+  min-width: 70px;
+}
+
+.roster-progress-bar {
+  flex: 1;
+  height: 6px;
+  background: #1a1a2e;
+  border-radius: 3px;
+  overflow: hidden;
+  min-width: 40px;
+}
+
+.roster-progress-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.5s ease;
+}
+
+.roster-progress-text {
+  color: #aaa;
+  font-size: 7px;
+  min-width: 25px;
+  text-align: right;
+}

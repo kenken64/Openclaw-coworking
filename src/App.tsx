@@ -1,13 +1,11 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import Header from './components/Header';
 import Sidebar from './components/Sidebar';
-import OfficeGrid from './components/OfficeGrid';
-import AgentCards from './components/AgentCards';
-import { initialAgents, rooms } from './data';
-import type { Agent, AgentStatus, FilterTab } from './types';
+import PhaserGame from './components/PhaserGame';
+import BottomPanels from './components/BottomPanels';
+import { initialAgents } from './data';
+import type { Agent, FilterTab } from './types';
 import './App.css';
-
-const statuses: AgentStatus[] = ['WORKING', 'IDLE', 'COMPUTING'];
 
 function App() {
   const [agents, setAgents] = useState<Agent[]>(initialAgents);
@@ -15,27 +13,8 @@ function App() {
   const [search, setSearch] = useState('');
   const [selectedAgent, setSelectedAgent] = useState<string | null>(null);
 
-  // Randomly update agent statuses and progress
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setAgents(prev =>
-        prev.map(agent => {
-          const shouldChange = Math.random() < 0.15;
-          if (!shouldChange) {
-            // Just update progress slightly
-            const progressDelta = Math.floor(Math.random() * 6) - 2;
-            const newProgress = Math.max(0, Math.min(100, agent.progress + progressDelta));
-            return { ...agent, progress: newProgress };
-          }
-          return {
-            ...agent,
-            status: statuses[Math.floor(Math.random() * statuses.length)],
-            progress: Math.floor(Math.random() * 60) + 20,
-          };
-        })
-      );
-    }, 3000);
-    return () => clearInterval(interval);
+  const handleAgentsUpdate = useCallback((updatedAgents: Agent[]) => {
+    setAgents(updatedAgents);
   }, []);
 
   const handleAgentClick = useCallback((id: string) => {
@@ -55,16 +34,14 @@ function App() {
           onSearchChange={setSearch}
           onAgentClick={handleAgentClick}
         />
-        <OfficeGrid
-          rooms={rooms}
-          agents={agents}
-          selectedAgent={selectedAgent}
-        />
-        <AgentCards
-          agents={agents}
-          selectedAgent={selectedAgent}
-          onAgentClick={handleAgentClick}
-        />
+        <div className="main-content">
+          <PhaserGame onAgentsUpdate={handleAgentsUpdate} />
+          <BottomPanels
+            agents={agents}
+            selectedAgent={selectedAgent}
+            onAgentClick={handleAgentClick}
+          />
+        </div>
       </div>
     </div>
   );
