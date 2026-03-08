@@ -7,202 +7,173 @@
 }
 
 .room-card {
+  background: #16213e;
+  border: 3px solid #2d3436;
   padding: 0;
   position: relative;
   overflow: hidden;
   transition: all 0.3s;
-  min-height: 260px;
+  min-height: 200px;
   image-rendering: pixelated;
-  /* Pixel-art room: blue wall (top 40%) → dark baseboard line → black carpet floor (bottom 60%) */
-  background:
-    linear-gradient(
-      to bottom,
-      #3a5578 0%,
-      #3a5578 38%,
-      #2a3b55 38%,
-      #2a3b55 40%,
-      #1e2a3e 40%,
-      #1e2a3e 41%,
-      #0a0a0a 41%,
-      #0a0a0a 100%
-    );
+}
+
+.room-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.03) 2px,
+    rgba(0, 0, 0, 0.03) 4px
+  );
+  pointer-events: none;
+  z-index: 1;
 }
 
 .room-highlighted {
+  border-color: #f1c40f;
   box-shadow: 0 0 20px rgba(241, 196, 15, 0.4), inset 0 0 20px rgba(241, 196, 15, 0.05);
 }
 
 .room-header {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 10px 14px;
-  background: rgba(0, 0, 0, 0.25);
+  gap: 6px;
+  padding: 8px 10px;
+  background: rgba(0, 0, 0, 0.3);
+  border-bottom: 2px solid #2d3436;
 }
 
 .room-icon {
-  font-size: 20px;
+  font-size: 16px;
 }
 
 .room-name {
   font-family: 'Press Start 2P', monospace;
-  font-size: 12px;
+  font-size: 8px;
   color: #dfe6e9;
   text-shadow: 1px 1px 0 #000;
+  flex: 1;
+}
+
+.room-agent-count {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 7px;
+  color: #2ecc71;
+  background: rgba(46, 204, 113, 0.15);
+  padding: 2px 6px;
+  border: 1px solid rgba(46, 204, 113, 0.3);
 }
 
 .room-content {
-  padding: 0;
+  padding: 12px;
   position: relative;
-  min-height: 160px;
-  display: flex;
-  flex-direction: column;
-  flex: 1;
+  min-height: 140px;
 }
 
-.room-floor {
-  flex: 1;
-  perspective: 400px;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  overflow: hidden;
+/* Sprite base */
+.sprite {
+  image-rendering: pixelated;
+  flex-shrink: 0;
 }
 
-.room-floor-inner {
-  transform: rotateX(25deg);
-  transform-origin: bottom center;
-  padding: 20px 14px 14px;
+/* Furniture layout */
+.room-interior {
+  position: relative;
+  margin-bottom: 4px;
 }
 
-.room-scene {
+.furniture-row {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-}
-
-.scene-row {
-  display: flex;
-  gap: 4px;
-  justify-content: center;
+  gap: 8px;
+  margin-bottom: 4px;
   align-items: flex-end;
 }
 
-/* Conference room — no 3D transform, flat top-down view */
-.conf-room {
-  gap: 4px;
-}
-
-/* Override: disable isometric tilt for conference */
-.room-card:first-child .room-floor-inner {
-  transform: none;
-  padding: 10px 14px 14px;
-}
-
-/* Left chairs | Vertical tables | Right chairs */
-.conf-table-group {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-}
-
-/* 3 chairs stacked vertically on each side */
-.conf-side-chairs {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  align-items: center;
-}
-
-/* Two tables stacked vertically (rotated 90deg) */
-.conf-tables-vertical {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  align-items: center;
-  padding: 16px 24px;
-}
-
-.conf-bottom {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-  margin-top: 8px;
-}
-
-/* Rotate table sprite 90deg and fix overflow */
-.conf-table-rotated {
-  transform: rotate(90deg);
-  margin: 10px 0;
-}
-
-.conf-walkers {
-  display: flex;
-  gap: 50px;
+.furniture-center {
   justify-content: center;
 }
 
-.walker-1 {
-  animation: walk-left 4s ease-in-out infinite;
+.furniture-spread {
+  justify-content: space-between;
 }
 
-.walker-2 {
-  transform: scaleX(-1);
-  animation: walk-right 5s ease-in-out infinite;
+.furniture-corner {
+  position: absolute;
+  top: 0;
+  right: 6px;
 }
 
-@keyframes walk-left {
-  0%, 100% { transform: translateX(0); }
-  50% { transform: translateX(-16px); }
-}
-
-@keyframes walk-right {
-  0%, 100% { transform: translateX(0); }
-  50% { transform: translateX(16px); }
-}
-
-.room-agents {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-  margin-top: 6px;
+/* Walking agents area */
+.room-agents-area {
   position: relative;
+  width: 100%;
+  height: 70px;
+  margin-top: 4px;
   z-index: 2;
 }
 
-.room-agent-sprite {
+.walking-agent {
+  position: absolute;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
-  transition: all 0.3s;
-  animation: sprite-idle 2s ease-in-out infinite;
+  gap: 1px;
+  padding: 2px;
+  border: 2px solid;
+  background: rgba(0, 0, 0, 0.35);
+  transition: left 2s ease-in-out, top 2s ease-in-out, transform 0.3s;
+  cursor: default;
 }
 
-.room-agent-sprite:hover {
-  transform: scale(1.1);
+.walking-agent::after {
+  content: '';
+  position: absolute;
+  bottom: -3px;
+  left: 25%;
+  width: 50%;
+  height: 3px;
+  background: rgba(0, 0, 0, 0.25);
+  border-radius: 50%;
+  filter: blur(1px);
+}
+
+.walking-agent:hover {
+  z-index: 10;
+  filter: brightness(1.2);
 }
 
 .agent-highlight {
   box-shadow: 0 0 12px rgba(241, 196, 15, 0.6);
-  animation: sprite-highlight 0.5s ease-in-out infinite alternate;
+  animation: sprite-highlight 0.5s ease-in-out infinite alternate !important;
+  z-index: 5;
 }
 
 .sprite-label {
   font-family: 'Press Start 2P', monospace;
-  font-size: 8px;
+  font-size: 5px;
   color: #dfe6e9;
+  text-shadow: 1px 1px 0 #000;
+  white-space: nowrap;
 }
 
-@keyframes sprite-idle {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-2px); }
+.agent-status-pip {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  box-shadow: 0 0 6px currentColor;
+  animation: pip-pulse 2s ease-in-out infinite;
 }
 
+/* Animations */
 @keyframes sprite-highlight {
   0% { box-shadow: 0 0 8px rgba(241, 196, 15, 0.4); }
   100% { box-shadow: 0 0 16px rgba(241, 196, 15, 0.8); }
+}
+
+@keyframes pip-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(0.8); }
 }
