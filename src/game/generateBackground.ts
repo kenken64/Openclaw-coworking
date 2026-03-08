@@ -58,12 +58,9 @@ export function generateOfficeBackground(): string {
   for (const [x, y] of chairPositions) {
     drawRect(x, y, 18, 12, '#8b4513');
   }
-  // Whiteboard on wall
-  drawRect(confX + 30, confY + 20, 80, 30, '#ffffff');
-  drawRect(confX + 32, confY + 22, 76, 26, '#f8f8f8');
-  ctx.fillStyle = '#ccccee';
-  ctx.font = 'bold 16px monospace';
-  ctx.fillText('📋 CONFERENCE', confX + 10, confY + 30);
+  // Whiteboard on wall (centered)
+  drawRect(confX + 163, confY + 20, 80, 30, '#ffffff');
+  drawRect(confX + 165, confY + 22, 76, 26, '#f8f8f8');
 
   // Top-center: Kitchen
   const kitchenX = 20 + roomW + 20, kitchenY = 100;
@@ -84,29 +81,65 @@ export function generateOfficeBackground(): string {
   drawRect(kitchenX + 180, kitchenY + 150, 15, 15, '#8b4513');
   drawRect(kitchenX + 220, kitchenY + 150, 15, 15, '#8b4513');
   drawRect(kitchenX + 260, kitchenY + 150, 15, 15, '#8b4513');
-  ctx.fillStyle = '#ccccee';
-  ctx.font = 'bold 16px monospace';
-  ctx.fillText('🍳 KITCHEN', kitchenX + 10, kitchenY + 30);
+  // Dining table in lower section
+  drawRect(kitchenX + 100, kitchenY + 185, 170, 55, '#5a3e28');
+  drawRect(kitchenX + 105, kitchenY + 190, 160, 45, '#6b4c32');
+  // Chairs around dining table
+  const diningChairs = [
+    [kitchenX + 120, kitchenY + 172], [kitchenX + 175, kitchenY + 172], [kitchenX + 230, kitchenY + 172],
+    [kitchenX + 120, kitchenY + 240], [kitchenX + 175, kitchenY + 240], [kitchenX + 230, kitchenY + 240],
+    [kitchenX + 82, kitchenY + 200],
+  ];
+  for (const [cx, cy] of diningChairs) {
+    drawRect(cx, cy, 20, 12, '#8b4513');
+  }
 
   // Top-right: Gym
   const gymX = 20 + roomW * 2 + 40, gymY = 100;
   drawRect(gymX, gymY, roomW, roomH, '#2d2d47', '#4a4a6a');
-  // Cardio zone (left side)
-  drawRect(gymX + 30, gymY + 40, 60, 30, '#4a4a4a'); // Treadmill 1
-  drawRect(gymX + 30, gymY + 80, 60, 30, '#4a4a4a'); // Treadmill 2
-  drawRect(gymX + 100, gymY + 40, 45, 30, '#555555'); // Exercise bike
-  // Weight zone (center)
-  drawRect(gymX + 180, gymY + 50, 40, 80, '#4a4a4a'); // Weight rack
-  drawRect(gymX + 230, gymY + 60, 60, 25, '#333333'); // Bench press
-  drawRect(gymX + 300, gymY + 40, 30, 30, '#4a4a4a'); // Dumbbells
-  // Stretching/yoga area (bottom)
-  drawRect(gymX + 60, gymY + 150, 200, 60, '#27ae60'); // Large mat area
-  drawRect(gymX + 280, gymY + 170, 80, 40, '#27ae60'); // Small mats
-  // Mirror wall indicator
-  drawRect(gymX + 10, gymY + 20, 350, 8, '#c0c0c0');
-  ctx.fillStyle = '#fff1a8';
-  ctx.font = 'bold 16px monospace';
-  ctx.fillText('💪 GYM', gymX + 10, gymY + 30);
+  // Treadmill 1 (blue/teal belt, dark frame, green console)
+  drawRect(gymX + 25, gymY + 40, 65, 28, '#3c3c5a'); // Frame
+  drawRect(gymX + 28, gymY + 47, 55, 16, '#006064'); // Belt
+  drawRect(gymX + 29, gymY + 41, 22, 9, '#00acc1'); // Console housing
+  drawRect(gymX + 31, gymY + 42, 18, 7, '#1b5e20'); // Console screen
+  // Treadmill 2
+  drawRect(gymX + 25, gymY + 78, 65, 28, '#3c3c5a');
+  drawRect(gymX + 28, gymY + 85, 55, 16, '#006064');
+  drawRect(gymX + 29, gymY + 79, 22, 9, '#00acc1');
+  drawRect(gymX + 31, gymY + 80, 18, 7, '#1b5e20');
+  // Exercise bike
+  drawRect(gymX + 100, gymY + 40, 42, 28, '#3c3c5a'); // Frame
+  drawRect(gymX + 114, gymY + 37, 14, 10, '#00acc1'); // Handlebars
+  drawRect(gymX + 118, gymY + 54, 8, 14, '#546e7a'); // Pedal column
+  // Cable/weight machine (grey frame with vertical bars)
+  drawRect(gymX + 178, gymY + 38, 44, 92, '#78909c'); // Outer frame
+  drawRect(gymX + 183, gymY + 43, 34, 82, '#546e7a'); // Inner frame
+  for (let wr = 0; wr < 4; wr++) {
+    drawRect(gymX + 186 + wr * 7, gymY + 46, 4, 72, '#37474f'); // Vertical bars
+  }
+  drawRect(gymX + 216, gymY + 60, 18, 38, '#424242'); // Weight stack
+  // Bench (orange pad on silver legs)
+  drawRect(gymX + 235, gymY + 65, 55, 18, '#b0bec5'); // Legs/frame
+  drawRect(gymX + 237, gymY + 61, 51, 12, '#ff6d00'); // Orange padding
+  // Dumbbell rack
+  drawRect(gymX + 300, gymY + 38, 36, 36, '#546e7a'); // Rack
+  for (let dr = 0; dr < 3; dr++) {
+    drawRect(gymX + 303, gymY + 42 + dr * 10, 30, 7, '#37474f'); // Dumbbell rows
+    drawRect(gymX + 303, gymY + 42 + dr * 10, 8, 7, '#ff6d00'); // Orange end caps
+    drawRect(gymX + 325, gymY + 42 + dr * 10, 8, 7, '#ff6d00');
+  }
+  // Stretching/yoga mats (individual tiled mats with detail)
+  const matPositions = [
+    [gymX + 60, gymY + 150], [gymX + 115, gymY + 150], [gymX + 170, gymY + 150],
+    [gymX + 225, gymY + 150], [gymX + 280, gymY + 150],
+    [gymX + 60, gymY + 195], [gymX + 115, gymY + 195],
+  ];
+  for (const [mx, my] of matPositions) {
+    drawRect(mx, my, 45, 35, '#27ae60', '#1e8449');
+    drawRect(mx + 4, my + 4, 37, 27, '#2ecc71');
+  }
+  // Mirror accent strip on left wall (below label area)
+  drawRect(gymX + 10, gymY + 55, 8, 90, '#d0d0d0');
 
   // ── Bottom Row: Server | Lounge | Workspace ──
   
@@ -128,16 +161,10 @@ export function generateOfficeBackground(): string {
       ctx.fillRect(x + 40, y + 10 + j * 12, 4, 3);
     }
   }
-  // Central control console
-  drawRect(serverX + 300, serverY + 70, 80, 40, '#2d2d47');
-  drawRect(serverX + 305, serverY + 75, 70, 30, '#1a1a1a');
   // Cable management
   drawRect(serverX + 30, serverY + 200, 250, 15, '#333333'); // Cable tray
   // Air conditioning unit
   drawRect(serverX + 320, serverY + 180, 60, 50, '#666666');
-  ctx.fillStyle = '#ccccee';
-  ctx.font = 'bold 16px monospace';
-  ctx.fillText('🖧 SERVER', serverX + 10, serverY + 30);
 
   // Bottom-center: Lounge
   const loungeX = 20 + roomW + 20, loungeY = 100 + roomH + 20;
@@ -171,9 +198,6 @@ export function generateOfficeBackground(): string {
   ctx.fillStyle = '#27ae60';
   ctx.fill();
   drawRect(loungeX + 175, loungeY + 212, 10, 15, '#654321');
-  ctx.fillStyle = '#ccccee';
-  ctx.font = 'bold 16px monospace';
-  ctx.fillText('🎵 LOUNGE', loungeX + 10, loungeY + 30);
 
   // Bottom-right: Main Workspace
   const workX = 20 + roomW * 2 + 40, workY = 100 + roomH + 20;
@@ -208,9 +232,6 @@ export function generateOfficeBackground(): string {
   // Pathway indicators (lighter floor)
   drawRect(workX + 110, workY + 30, 15, 200, '#3d3d57'); // Main aisle
   drawRect(workX + 210, workY + 80, 100, 15, '#3d3d57'); // Cross aisle
-  ctx.fillStyle = '#ccccee';
-  ctx.font = 'bold 16px monospace';
-  ctx.fillText('🖥️ WORKSPACE', workX + 10, workY + 20); // Moved higher to avoid desk overlap
 
   // ── Grid separators ──
   ctx.strokeStyle = '#4a4a6a';
@@ -256,10 +277,10 @@ export function generateOfficeBackground(): string {
     ctx.fillRect(W/2 - 80 + i * 15, 30 + Math.random() * 20, 2, 2);
   }
   
-  // Room labels on wall
-  ctx.fillStyle = '#7f8c8d';
-  ctx.font = 'bold 14px monospace';
-  ctx.fillText('OpenClaw Co-working Office', W/2 - 120, 50);
+  // Title on wall (left-aligned)
+  ctx.fillStyle = '#aabbcc';
+  ctx.font = 'bold 22px monospace';
+  ctx.fillText('OpenClaw Co-working Office', 30, 58);
 
   return canvas.toDataURL('image/png');
 }

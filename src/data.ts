@@ -9,8 +9,8 @@ export const initialAgents: Agent[] = [
   { id: 'nova', name: 'NOVA', personName: 'David', status: 'COMPUTING', progress: 88, room: 'vibe', color: '#5352ed', emoji: '⭐' },
   { id: 'oracle', name: 'ORACLE', personName: 'Jessica', status: 'WORKING', progress: 55, room: 'kitchen', color: '#2ed573', emoji: '🔮' },
   { id: 'pixel', name: 'PIXEL', personName: 'Robert', status: 'IDLE', progress: 30, room: 'gym', color: '#ff6348', emoji: '🎨' },
-  { id: 'scribe', name: 'SCRIBE', personName: 'Daniel', status: 'WORKING', progress: 83, room: 'jarvis', color: '#ffa502', emoji: '✍️' },
-  { id: 'sentinel', name: 'SENTINEL', personName: 'Amanda', status: 'WORKING', progress: 95, room: 'jarvis', color: '#ff4757', emoji: '🛡️' },
+  { id: 'scribe', name: 'SCRIBE', personName: 'Daniel', status: 'WORKING', progress: 83, room: 'conference', color: '#ffa502', emoji: '✍️' },
+  { id: 'sentinel', name: 'SENTINEL', personName: 'Amanda', status: 'WORKING', progress: 95, room: 'conference', color: '#ff4757', emoji: '🛡️' },
   { id: 'trendy', name: 'TRENDY', personName: 'Kevin', status: 'WORKING', progress: 42, room: 'vibe', color: '#ff6b81', emoji: '✨' },
 ];
 

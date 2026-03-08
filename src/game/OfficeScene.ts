@@ -4,46 +4,87 @@ import { initialAgents } from '../data';
 import type { Agent, AgentStatus } from '../types';
 import { CHARACTERS, COMPUTER } from '../sprites';
 
-// ── Area coordinates (where agents go based on status/room) ──
-// Balanced 2x3 grid layout: Equal room sizes, better spacing
+// ── Area coordinates — open floor slots only, cross-referenced against furniture ──
 const AREA_COORDS: Record<string, { x: number; y: number }[]> = {
   conference: [
-    // Top-left: Conference room (large space)
-    { x: 120, y: 180 }, { x: 180, y: 200 }, { x: 220, y: 170 },
-    { x: 160, y: 220 }, { x: 200, y: 190 }, { x: 140, y: 240 },
-    { x: 260, y: 180 }, { x: 280, y: 210 },
+    { x: 82, y: 193 }, { x: 82, y: 213 },
+    { x: 142, y: 162 }, { x: 202, y: 162 },
+    { x: 280, y: 193 }, { x: 280, y: 213 },
+    { x: 142, y: 244 }, { x: 202, y: 244 },
   ],
   kitchen: [
-    // Top-center: Kitchen area
-    { x: 480, y: 170 }, { x: 520, y: 190 }, { x: 560, y: 180 },
-    { x: 500, y: 220 }, { x: 540, y: 200 }, { x: 460, y: 210 },
-    { x: 580, y: 170 }, { x: 520, y: 240 },
+    { x: 618, y: 167 },
+    { x: 735, y: 158 }, { x: 735, y: 207 },
+    { x: 820, y: 165 }, { x: 820, y: 210 },
+    { x: 568, y: 272 }, { x: 642, y: 272 }, { x: 712, y: 272 },
+    { x: 600, y: 348 }, { x: 682, y: 348 },
   ],
   gym: [
-    // Top-right: Gym space
-    { x: 880, y: 180 }, { x: 920, y: 200 }, { x: 960, y: 170 },
-    { x: 900, y: 230 }, { x: 940, y: 210 }, { x: 860, y: 190 },
-    { x: 980, y: 180 }, { x: 920, y: 250 },
+    { x: 882, y: 157 }, { x: 882, y: 202 },
+    { x: 1028, y: 157 }, { x: 1028, y: 197 },
+    { x: 1220, y: 155 }, { x: 1220, y: 207 }, { x: 1220, y: 257 },
+    { x: 920, y: 353 }, { x: 1000, y: 353 }, { x: 1100, y: 353 },
   ],
   computing: [
-    // Bottom-left: Server room
-    { x: 140, y: 480 }, { x: 200, y: 500 }, { x: 180, y: 460 },
-    { x: 220, y: 480 }, { x: 160, y: 520 }, { x: 240, y: 470 },
-    { x: 260, y: 500 }, { x: 180, y: 540 },
+    { x: 48, y: 432 }, { x: 120, y: 432 }, { x: 200, y: 432 },
+    { x: 292, y: 462 }, { x: 292, y: 512 }, { x: 292, y: 562 },
+    { x: 352, y: 497 }, { x: 378, y: 497 },
   ],
   vibe: [
-    // Bottom-center: Lounge area
-    { x: 480, y: 480 }, { x: 520, y: 500 }, { x: 560, y: 470 },
-    { x: 500, y: 520 }, { x: 540, y: 490 }, { x: 460, y: 510 },
-    { x: 580, y: 480 }, { x: 520, y: 540 },
+    { x: 468, y: 490 }, { x: 468, y: 545 },
+    { x: 800, y: 467 }, { x: 800, y: 525 }, { x: 800, y: 578 },
+    { x: 580, y: 607 }, { x: 640, y: 607 }, { x: 700, y: 607 },
+    { x: 540, y: 558 },
   ],
   jarvis: [
-    // Bottom-right: Main workspace (largest area)
-    { x: 880, y: 460 }, { x: 920, y: 480 }, { x: 960, y: 470 },
-    { x: 900, y: 510 }, { x: 940, y: 490 }, { x: 860, y: 500 },
-    { x: 980, y: 460 }, { x: 1000, y: 490 }, { x: 1020, y: 470 },
-    { x: 840, y: 480 }, { x: 1040, y: 500 }, { x: 920, y: 530 },
-    { x: 1000, y: 520 }, { x: 860, y: 540 }, { x: 980, y: 540 },
+    { x: 938, y: 488 }, { x: 1038, y: 488 }, { x: 1138, y: 488 },
+    { x: 945, y: 553 }, { x: 1050, y: 553 }, { x: 1153, y: 553 },
+    { x: 963, y: 575 }, { x: 1023, y: 575 },
+    { x: 1220, y: 508 }, { x: 1220, y: 560 },
+    { x: 878, y: 460 }, { x: 878, y: 508 }, { x: 878, y: 553 },
+    { x: 1023, y: 460 }, { x: 1153, y: 595 },
+  ],
+};
+
+// ── Furniture bounding boxes per area — used to reject overlap slots ──
+const FURNITURE_ZONES: Record<string, { x: number; y: number; w: number; h: number }[]> = {
+  conference: [
+    { x: 98,  y: 168, w: 164, h: 54  },
+    { x: 181, y: 118, w: 82,  h: 32  },
+  ],
+  kitchen: [
+    { x: 477, y: 148, w: 122, h: 110 },
+    { x: 645, y: 188, w: 84,  h: 44  },
+    { x: 765, y: 138, w: 44,  h: 74  },
+    { x: 545, y: 283, w: 172, h: 57  },
+  ],
+  gym: [
+    { x: 896, y: 138, w: 68,  h: 70  },
+    { x: 971, y: 135, w: 46,  h: 35  },
+    { x: 1049,y: 136, w: 48,  h: 96  },
+    { x: 1108,y: 159, w: 57,  h: 26  },
+    { x: 1171,y: 136, w: 40,  h: 40  },
+    { x: 931, y: 248, w: 250, h: 84  },
+  ],
+  computing: [
+    { x: 58,  y: 448, w: 214, h: 64  },
+    { x: 58,  y: 528, w: 214, h: 64  },
+    { x: 338, y: 588, w: 64,  h: 52  },
+    { x: 48,  y: 608, w: 254, h: 17  },
+  ],
+  vibe: [
+    { x: 505, y: 468, w: 124, h: 38  },
+    { x: 505, y: 503, w: 40,  h: 90  },
+    { x: 553, y: 518, w: 84,  h: 34  },
+    { x: 695, y: 458, w: 84,  h: 38  },
+    { x: 663, y: 508, w: 44,  h: 44  },
+  ],
+  jarvis: [
+    { x: 901, y: 448, w: 274, h: 39  },
+    { x: 901, y: 508, w: 294, h: 44  },
+    { x: 1191,y: 458, w: 64,  h: 104 },
+    { x: 921, y: 578, w: 154, h: 34  },
+    { x: 1111,y: 578, w: 124, h: 64  },
   ],
 };
 
@@ -88,6 +129,7 @@ interface AgentSprite {
   bubble: Phaser.GameObjects.Container | null;
   bubbleTimer: number;
   lastStatusChange: number;
+  isMoving: boolean;
 }
 
 export class OfficeScene extends Phaser.Scene {
@@ -153,9 +195,36 @@ export class OfficeScene extends Phaser.Scene {
     // Place computers on desks using sprite sheet
     this.placeComputersOnDesks();
 
+    // Room labels always on top of characters
+    this.createRoomLabels();
+
     // Notify React of initial state
     if (this.onAgentsUpdate) {
       this.onAgentsUpdate([...this.agents]);
+    }
+  }
+
+  private createRoomLabels() {
+    const roomW = (1280 - 60) / 3;
+    const roomH = (720 - 140) / 2;
+    const labels = [
+      { text: '📋 CONFERENCE', x: 30,                    y: 112, color: '#ccccee' },
+      { text: '🍳 KITCHEN',   x: 20 + roomW + 30,        y: 112, color: '#ccccee' },
+      { text: '💪 GYM',       x: 20 + roomW * 2 + 50,    y: 112, color: '#fff1a8' },
+      { text: '🖧 SERVER',    x: 30,                     y: 100 + roomH + 32, color: '#ccccee' },
+      { text: '🎵 LOUNGE',   x: 20 + roomW + 30,        y: 100 + roomH + 32, color: '#ccccee' },
+      { text: '🖥️ WORKSPACE', x: 20 + roomW * 2 + 50,    y: 100 + roomH + 32, color: '#ccccee' },
+    ];
+    for (const label of labels) {
+      this.add.text(label.x, label.y, label.text, {
+        fontFamily: 'bold monospace',
+        fontSize: '13px',
+        color: label.color,
+        stroke: '#000000',
+        strokeThickness: 3,
+        backgroundColor: '#00000055',
+        padding: { x: 4, y: 2 },
+      }).setDepth(5000).setOrigin(0, 0.5);
     }
   }
 
@@ -180,7 +249,6 @@ export class OfficeScene extends Phaser.Scene {
     const confX = 20, confY = 100;
     const confCompPositions = [
       { x: confX + 160, y: confY + 95 }, // Center of oval conference table
-      { x: confX + 60, y: confY + 35 }, // Laptop on whiteboard counter
     ];
     for (const pos of confCompPositions) {
       const comp = this.add.image(pos.x, pos.y, 'computer_sprite');
@@ -191,8 +259,7 @@ export class OfficeScene extends Phaser.Scene {
     // Kitchen computers (minimal)
     const kitchenX = 20 + roomW + 20, kitchenY = 100;
     const kitchenCompPositions = [
-      { x: kitchenX + 240, y: kitchenY + 110 }, // Tablet on kitchen island
-      { x: kitchenX + 100, y: kitchenY + 42 }, // Small display above coffee station
+      { x: kitchenX + 240, y: kitchenY + 110 }, // Tablet on kitchen island (table)
     ];
     for (const pos of kitchenCompPositions) {
       const comp = this.add.image(pos.x, pos.y, 'computer_sprite');
@@ -219,18 +286,7 @@ export class OfficeScene extends Phaser.Scene {
       comp.setDepth(60); // Higher depth to appear on top of desks
     }
 
-    // Server room computers
-    const serverX = 20, serverY = 100 + roomH + 20;
-    const serverCompPositions = [
-      { x: serverX + 340, y: serverY + 90 }, // Central control console
-      { x: serverX + 65, y: serverY + 35 }, // Rack monitoring station
-      { x: serverX + 145, y: serverY + 35 }, // Second monitoring point
-    ];
-    for (const pos of serverCompPositions) {
-      const comp = this.add.image(pos.x, pos.y, 'computer_sprite');
-      comp.setScale(1.4); // Smaller control station monitors
-      comp.setDepth(60); // Higher depth to appear on top of consoles
-    }
+    // Server room: no computers (racks have their own LED indicators)
 
 
   }
@@ -264,16 +320,55 @@ export class OfficeScene extends Phaser.Scene {
     return agent.room;
   }
 
-  private getPositionInArea(area: string, index: number): { x: number; y: number } {
+  private getAvailablePosition(agentId: string, area: string): { x: number; y: number } {
     const coords = AREA_COORDS[area] || AREA_COORDS['vibe'];
-    return coords[index % coords.length];
+    const MIN_SLOT_DIST = 65;
+    const FURNITURE_PAD = 14;
+
+    const takenPositions: { x: number; y: number }[] = [];
+    for (const [id, spriteData] of this.agentSprites) {
+      if (id !== agentId) {
+        takenPositions.push({ x: spriteData.targetX, y: spriteData.targetY });
+      }
+    }
+
+    const clearOfFurniture = (x: number, y: number): boolean =>
+      (FURNITURE_ZONES[area] || []).every(z =>
+        x < z.x - FURNITURE_PAD || x > z.x + z.w + FURNITURE_PAD ||
+        y < z.y - FURNITURE_PAD || y > z.y + z.h + FURNITURE_PAD
+      );
+
+    for (const coord of coords) {
+      if (!clearOfFurniture(coord.x, coord.y)) continue;
+      const isFree = takenPositions.every(t => {
+        const dx = t.x - coord.x;
+        const dy = t.y - coord.y;
+        return Math.sqrt(dx * dx + dy * dy) >= MIN_SLOT_DIST;
+      });
+      if (isFree) {
+        return { x: coord.x + (Math.random() - 0.5) * 16, y: coord.y + (Math.random() - 0.5) * 16 };
+      }
+    }
+
+    const clearCoords = coords.filter(c => clearOfFurniture(c.x, c.y));
+    const pool = clearCoords.length > 0 ? clearCoords : coords;
+    let bestCoord = pool[0];
+    let bestMinDist = -1;
+    for (const coord of pool) {
+      if (takenPositions.length === 0) { bestCoord = coord; break; }
+      const minDist = Math.min(...takenPositions.map(t => {
+        const dx = t.x - coord.x;
+        const dy = t.y - coord.y;
+        return Math.sqrt(dx * dx + dy * dy);
+      }));
+      if (minDist > bestMinDist) { bestMinDist = minDist; bestCoord = coord; }
+    }
+    return { x: bestCoord.x + (Math.random() - 0.5) * 16, y: bestCoord.y + (Math.random() - 0.5) * 16 };
   }
 
   private createAgentSprite(agent: Agent) {
     const area = this.getAreaForAgent(agent);
-    const areaAgents = this.agents.filter(a => this.getAreaForAgent(a) === area);
-    const idx = areaAgents.indexOf(agent);
-    const pos = this.getPositionInArea(area, idx >= 0 ? idx : 0);
+    const pos = this.getAvailablePosition(agent.id, area);
 
     const container = this.add.container(pos.x, pos.y);
     container.setDepth(100 + pos.y); // Y-sorting
@@ -345,6 +440,7 @@ export class OfficeScene extends Phaser.Scene {
       bubble: null,
       bubbleTimer: 0,
       lastStatusChange: this.time.now,
+      isMoving: false,
     });
   }
 
@@ -356,27 +452,54 @@ export class OfficeScene extends Phaser.Scene {
       COMPUTING: ['jarvis', 'computing'],
     };
 
+    const MAX_PER_AREA = 2;
+
+    // Build live area occupancy counts before processing changes
+    const areaCounts = new Map<string, number>();
+    for (const [, spriteData] of this.agentSprites) {
+      const area = this.getAreaForAgent(spriteData.agent);
+      areaCounts.set(area, (areaCounts.get(area) || 0) + 1);
+    }
+
     let changed = false;
 
     this.agents = this.agents.map((agent) => {
       const shouldChange = Math.random() < 0.12;
       if (!shouldChange) {
-        // Just update progress
         const delta = Math.floor(Math.random() * 6) - 2;
         return { ...agent, progress: Math.max(0, Math.min(100, agent.progress + delta)) };
       }
 
       changed = true;
-      const newStatus = statuses[Math.floor(Math.random() * statuses.length)];
-      const rooms = roomOptions[newStatus];
-      const newRoom = rooms[Math.floor(Math.random() * rooms.length)];
+      const currentArea = this.getAreaForAgent(agent);
 
-      return {
-        ...agent,
-        status: newStatus,
-        progress: Math.floor(Math.random() * 60) + 20,
-        room: newRoom,
-      };
+      // Build all status+room candidates and shuffle them
+      const candidates: { status: AgentStatus; room: string }[] = [];
+      for (const status of statuses) {
+        for (const room of roomOptions[status]) {
+          candidates.push({ status, room });
+        }
+      }
+      for (let i = candidates.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [candidates[i], candidates[j]] = [candidates[j], candidates[i]];
+      }
+
+      // Pick the first candidate whose target area has room (< MAX_PER_AREA)
+      for (const { status, room } of candidates) {
+        const targetArea = this.getAreaForAgent({ ...agent, status, room });
+        const occupants = areaCounts.get(targetArea) || 0;
+        const effective = targetArea === currentArea ? occupants - 1 : occupants;
+        if (effective < MAX_PER_AREA) {
+          areaCounts.set(currentArea, Math.max(0, (areaCounts.get(currentArea) || 1) - 1));
+          areaCounts.set(targetArea, (areaCounts.get(targetArea) || 0) + 1);
+          return { ...agent, status, room, progress: Math.floor(Math.random() * 60) + 20 };
+        }
+      }
+
+      // Every area is at capacity — stay put
+      const delta = Math.floor(Math.random() * 6) - 2;
+      return { ...agent, progress: Math.max(0, Math.min(100, agent.progress + delta)) };
     });
 
     if (changed) {
@@ -391,13 +514,10 @@ export class OfficeScene extends Phaser.Scene {
 
           // Calculate new target position
           const area = this.getAreaForAgent(agent);
-          const areaAgents = this.agents.filter(a => this.getAreaForAgent(a) === area);
-          const idx = areaAgents.indexOf(agent);
-          const pos = this.getPositionInArea(area, idx >= 0 ? idx : 0);
+          const pos = this.getAvailablePosition(agent.id, area);
 
-          // Add more randomness to prevent stacking
-          spriteData.targetX = pos.x + (Math.random() - 0.5) * 60;
-          spriteData.targetY = pos.y + (Math.random() - 0.5) * 50;
+          spriteData.targetX = pos.x;
+          spriteData.targetY = pos.y;
 
           // Check movement direction and flip sprite accordingly
           const deltaX = spriteData.targetX - spriteData.container.x;
@@ -417,10 +537,11 @@ export class OfficeScene extends Phaser.Scene {
             }
           }
 
-          // Animate movement with mobile speed adjustment
+          // Animate movement
           const isMobile = window.innerWidth <= 768;
-          const moveDuration = isMobile ? 3000 + Math.random() * 2000 : 1500 + Math.random() * 1000; // Slower on mobile
-          
+          const moveDuration = isMobile ? 3000 + Math.random() * 2000 : 2000 + Math.random() * 1000;
+
+          spriteData.isMoving = true;
           this.tweens.add({
             targets: spriteData.container,
             x: spriteData.targetX,
@@ -428,8 +549,10 @@ export class OfficeScene extends Phaser.Scene {
             duration: moveDuration,
             ease: 'Sine.easeInOut',
             onUpdate: () => {
-              // Update depth for Y-sorting
               spriteData.container.setDepth(100 + spriteData.container.y);
+            },
+            onComplete: () => {
+              spriteData.isMoving = false;
             },
           });
 
@@ -483,25 +606,27 @@ export class OfficeScene extends Phaser.Scene {
 
     const bubbleText = this.add.text(0, 0, text, {
       fontFamily: '"Press Start 2P", monospace',
-      fontSize: '7px',
-      color: '#000000',
+      fontSize: '11px',
+      color: '#111111',
       align: 'center',
-      wordWrap: { width: 120 },
+      wordWrap: { width: 180 },
+      stroke: '#ffffff',
+      strokeThickness: 1,
     }).setOrigin(0.5);
 
-    const padding = 8;
-    const bubbleW = bubbleText.width + padding * 2;
+    const padding = 14;
+    const bubbleW = Math.max(bubbleText.width + padding * 2, 80);
     const bubbleH = bubbleText.height + padding * 2;
 
-    const bg = this.add.rectangle(0, 0, bubbleW, bubbleH, 0xffffff, 0.95);
-    bg.setStrokeStyle(2, 0x333333);
+    const bg = this.add.rectangle(0, 0, bubbleW, bubbleH, 0xfffde7, 0.97);
+    bg.setStrokeStyle(2, 0x444444);
 
     // Tail triangle
-    const tail = this.add.triangle(0, bubbleH / 2 + 4, -4, 0, 4, 0, 0, 8, 0xffffff);
-    tail.setStrokeStyle(1, 0x333333);
+    const tail = this.add.triangle(0, bubbleH / 2 + 5, -6, 0, 6, 0, 0, 10, 0xfffde7);
+    tail.setStrokeStyle(1, 0x444444);
 
     let bx = spriteData.container.x;
-    let by = spriteData.container.y - 70;
+    let by = spriteData.container.y - 90;
 
     // Avoid overlapping with other bubbles: simple check and nudge
     const existingBubbles = Array.from(this.agentSprites.values()).map(s => s.bubble).filter(Boolean) as Phaser.GameObjects.Container[];
@@ -548,23 +673,38 @@ export class OfficeScene extends Phaser.Scene {
     });
   }
 
+  // Room boundary boxes — characters are clamped inside their room, never into separators
+  private getRoomBounds(area: string): { minX: number; maxX: number; minY: number; maxY: number } {
+    const bounds: Record<string, { minX: number; maxX: number; minY: number; maxY: number }> = {
+      conference: { minX: 32,  maxX: 415, minY: 118, maxY: 382 },
+      kitchen:    { minX: 458, maxX: 840, minY: 118, maxY: 382 },
+      gym:        { minX: 884, maxX: 1265, minY: 118, maxY: 382 },
+      computing:  { minX: 32,  maxX: 415, minY: 428, maxY: 692 },
+      vibe:       { minX: 458, maxX: 840, minY: 428, maxY: 692 },
+      jarvis:     { minX: 884, maxX: 1265, minY: 428, maxY: 692 },
+    };
+    return bounds[area] ?? { minX: 32, maxX: 1265, minY: 118, maxY: 692 };
+  }
+
   update() {
     // Update bubble positions to follow agents
     for (const [, spriteData] of this.agentSprites) {
       if (spriteData.bubble) {
         spriteData.bubble.x = spriteData.container.x;
-        spriteData.bubble.y = spriteData.container.y - 70;
+        spriteData.bubble.y = spriteData.container.y - 90;
       }
     }
 
-    // Collision detection — push agents apart if too close
-    const isMobile = window.innerWidth <= 768;
-    const MIN_DIST = isMobile ? 120 : 80; // Wider gap on mobile for larger characters
-    const PUSH_FORCE = isMobile ? 1.5 : 2.5; // Gentler push on mobile for smoother movement
+    // Gentle separation for stationary characters only — skip any that are mid-tween
+    const MIN_DIST = 60;
+    const PUSH_FORCE = 0.4;
     const entries = Array.from(this.agentSprites.values());
 
     for (let i = 0; i < entries.length; i++) {
       for (let j = i + 1; j < entries.length; j++) {
+        // Skip if either character is currently moving — let them pass freely
+        if (entries[i].isMoving || entries[j].isMoving) continue;
+
         const a = entries[i].container;
         const b = entries[j].container;
         const dx = b.x - a.x;
@@ -572,7 +712,6 @@ export class OfficeScene extends Phaser.Scene {
         const dist = Math.sqrt(dx * dx + dy * dy);
 
         if (dist < MIN_DIST && dist > 0) {
-          // Normalize and push apart
           const nx = dx / dist;
           const ny = dy / dist;
           const overlap = (MIN_DIST - dist) * 0.5 * PUSH_FORCE;
@@ -582,13 +721,14 @@ export class OfficeScene extends Phaser.Scene {
           b.x += nx * overlap;
           b.y += ny * overlap;
 
-          // Clamp to game bounds
-          a.x = Phaser.Math.Clamp(a.x, 40, 1240);
-          a.y = Phaser.Math.Clamp(a.y, 100, 650);
-          b.x = Phaser.Math.Clamp(b.x, 40, 1240);
-          b.y = Phaser.Math.Clamp(b.y, 100, 650);
+          // Clamp each to their own room
+          const aBounds = this.getRoomBounds(this.getAreaForAgent(entries[i].agent));
+          const bBounds = this.getRoomBounds(this.getAreaForAgent(entries[j].agent));
+          a.x = Phaser.Math.Clamp(a.x, aBounds.minX, aBounds.maxX);
+          a.y = Phaser.Math.Clamp(a.y, aBounds.minY, aBounds.maxY);
+          b.x = Phaser.Math.Clamp(b.x, bBounds.minX, bBounds.maxX);
+          b.y = Phaser.Math.Clamp(b.y, bBounds.minY, bBounds.maxY);
 
-          // Update depth for Y-sorting
           a.setDepth(100 + a.y);
           b.setDepth(100 + b.y);
         }
